@@ -1,4 +1,8 @@
-<form fsForm [submit]="messageSend" #messageForm [ngClass]="{ inited: inited }">
+<form
+    fsForm
+    [submit]="messageSend"
+    #messageForm
+    [ngClass]="{ inited: inited }">
   <ng-container *ngIf="conversation">
     <app-conversation-header
       [conversationService]="conversationService"
@@ -8,19 +12,33 @@
       (conversationClose)="conversationClose.emit()"
       (conversationChange)="conversationReload()">
     </app-conversation-header>
-    <div class="conversation-container" #conversationContainer>
+    <div
+        class="conversation-container"
+        #conversationContainer>
       <div class="conversation">
         <app-conversation-items
           [account]="account"
           [conversationService]="conversationService"
           [conversation]="conversation"
           [sessionConversationParticipant]="sessionConversationParticipant"
-          (conversationInitialLoad)="conversationInitialLoad()"
+          (conversationInitialLoad)="conversationScrollToBottom()"
           (conversationChange)="conversationReload()">
         </app-conversation-items>
-        <div class="typing" *ngIf="typing.state==='single'">{{typing.name}} is typing..</div>
-        <div class="typing" *ngIf="typing.state==='multiple'">People are typing..</div>
-        <div class="typing" *ngIf="typing.state==='none'">&nbsp;</div>
+        <div
+            class="typing"
+            *ngIf="typing.state==='single'">
+          {{ typing.name }} is typing..
+        </div>
+        <div
+            class="typing"
+            *ngIf="typing.state==='multiple'">
+          People are typing..
+        </div>
+        <div
+            class="typing"
+            *ngIf="typing.state==='none'">
+          &nbsp;
+        </div>
       </div>
       <ng-container *ngIf="inited && !joined">
         <div class="join-conversation">
@@ -37,7 +55,7 @@
     <ng-container *ngIf="joined">
       <div class="message-send-container">
         <div class="message-actions">
-          <mat-form-field  class="form-field-padless">
+          <mat-form-field class="form-field-padless">
             <textarea
               #messageInput
               matInput
@@ -59,7 +77,9 @@
                   class="button"
                   [disabled]="(!message && !files.length) || conversation.state === ConversationState.Closed"
                   color="primary">
-                <mat-icon>send</mat-icon>
+                <mat-icon>
+                  send
+                </mat-icon>
               </button>
             </ng-container>
             <ng-container *ngIf="submitting">
@@ -69,7 +89,8 @@
             </ng-container>
             <fs-file
                 class="button"
-                [disabled]="conversation.state === ConversationState.Closed" (select)="fileSelect($event)"
+                [disabled]="conversation.state === ConversationState.Closed"
+                (select)="fileSelect($event)"
                 [multiple]="true"
                 imageWidth="1200"
                 imageQuality=".8">
@@ -78,19 +99,25 @@
                   [disabled]="conversation.state === ConversationState.Closed || submitting"
                   type="button"
                   color="basic">
-                <mat-icon>attach_file</mat-icon>
+                <mat-icon>
+                  attach_file
+                </mat-icon>
               </a>
             </fs-file>
           </div>
         </div>
-
-        <fs-file-previews [previewWidth]="100" [previewHeight]="100" [files]="files">
+        <fs-file-previews
+            [previewWidth]="100"
+            [previewHeight]="100"
+            [files]="files">
           <ng-template
               fs-file-preview-action
               placement="top-right"
               action="remove"
               tooltip="Remove">
-            <mat-icon>close</mat-icon>
+            <mat-icon>
+              close
+            </mat-icon>
           </ng-template>
         </fs-file-previews>
       </div>

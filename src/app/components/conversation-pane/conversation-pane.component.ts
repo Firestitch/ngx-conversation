@@ -145,8 +145,13 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
                 state: ConversationItemState.Active,
               }) : of(conversationItem);
         }),
+        switchMap(() => {
+          return this.conversationItems.load$();
+        }),
         tap(() => {
-          this.conversationItems.load();
+          setTimeout(() => {
+            this.conversationScrollToBottom();
+          });
         }),
         finalize(() => {
           this.conversationItems.autoload = false;
@@ -220,7 +225,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
       .subscribe();
   }
 
-  public conversationInitialLoad() {
+  public conversationScrollToBottom() {
     this.conversationContainerEl.nativeElement.scrollTop = this.conversationContainerEl.nativeElement.scrollHeight;
   }
 

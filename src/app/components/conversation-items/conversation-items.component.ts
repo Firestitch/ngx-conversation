@@ -100,16 +100,6 @@ export class ConversationItemsComponent implements OnInit, OnDestroy {
   public load(): void { 
     this.load$()
       .subscribe();
-
-    // tap((response) => {
-    //   setTimeout(() => {
-    //     const converstaion: any = response.data[0];
-    //     if(converstaion) {
-    //       const el = this.listEl.nativeElement?.querySelector(`tbody tr .converstaion-row[data="converstaion-row-${converstaion.id}"]`);
-    //       el?.scrollIntoView({ behavior: 'smooth' });
-    //     }
-    //   });
-    // }),
   }
 
   public load$(): Observable<any> {
