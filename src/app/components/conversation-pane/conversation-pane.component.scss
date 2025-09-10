@@ -45,6 +45,10 @@ form {
       margin-left: 5px;
       align-items: center;
 
+      .button {
+        display: flex;
+      }
+
       .spinner {
         width: 36px;
         display: flex;

@@ -56,7 +56,6 @@ export class ConversationHeaderComponent implements OnDestroy, OnInit {
     this.initConversationActions();
     this.filterConf = {
       persist: false,
-      inline: false,
       chips: false,
       queryParam: false,
       button: {

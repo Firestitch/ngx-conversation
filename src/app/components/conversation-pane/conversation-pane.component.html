@@ -74,7 +74,7 @@
               <button
                   mat-icon-button
                   type="submit"
-                  class="button"
+                  class="button send-button"
                   [disabled]="(!message && !files.length) || conversation.state === ConversationState.Closed"
                   color="primary">
                 <mat-icon>
@@ -88,7 +88,6 @@
               </div>
             </ng-container>
             <fs-file
-                class="button"
                 [disabled]="conversation.state === ConversationState.Closed"
                 (select)="fileSelect($event)"
                 [multiple]="true"
@@ -96,6 +95,7 @@
                 imageQuality=".8">
               <a
                   mat-icon-button
+                  class="button file-button"
                   [disabled]="conversation.state === ConversationState.Closed || submitting"
                   type="button"
                   color="basic">
@@ -107,17 +107,14 @@
           </div>
         </div>
         <fs-file-previews
-            [previewWidth]="100"
-            [previewHeight]="100"
+            [previewWidth]="120"
+            [previewHeight]="120"
             [files]="files">
           <ng-template
-              fs-file-preview-action
-              placement="top-right"
-              action="remove"
-              tooltip="Remove">
-            <mat-icon>
-              close
-            </mat-icon>
+            fs-file-preview-action
+            [placement]="'top-right'"
+            [action]="'remove'"
+            [icon]="'close'">
           </ng-template>
         </fs-file-previews>
       </div>

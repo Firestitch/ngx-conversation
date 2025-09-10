@@ -128,26 +128,27 @@ export class ConversationItemsComponent implements OnInit, OnDestroy {
         map((response) => {
           return response.conversationItems
             .map((conversationItem) => {
+              const galleryConfig: FsGalleryConfig = {
+                info: false,
+                thumbnail: {
+                  heightScale: 0.7,
+                  width: 200,
+                  scale: ThumbnailScale.None,
+                },
+                zoom: false,
+                fetch: (): Observable<FsGalleryItem[]> => {
+                  return of(conversationItem.conversationItemFiles
+                    .map((conversationItemFile) => {
+                      return this.conversationService
+                        .mapGalleryItem(conversationItem, conversationItemFile);
+                    }));
+                },
+              };
+
               return {
                 ...conversationItem,
                 canDelete: this.canDelete(conversationItem),
-                galleryConfig: {
-                  info: false,
-                  thumbnail: {
-                    heightScale: 0.7,
-                    width: 200,
-                    scale: ThumbnailScale.None,
-                  },
-                  toolbar: false,
-                  zoom: false,
-                  fetch: (): Observable<FsGalleryItem[]> => {
-                    return of(conversationItem.conversationItemFiles
-                      .map((conversationItemFile) => {
-                        return this.conversationService
-                          .mapGalleryItem(conversationItem, conversationItemFile);
-                      }));
-                  },
-                } as FsGalleryConfig,
+                galleryConfig,
               };
             });
         }),
