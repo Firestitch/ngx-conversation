@@ -1,7 +1,7 @@
 {
   "name": "@firestitch/conversation",
   "title": "Conversation",
-  "version": "18.0.10",
+  "version": "18.0.11",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-conversation"

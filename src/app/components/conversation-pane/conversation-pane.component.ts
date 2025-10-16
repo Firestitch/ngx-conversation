@@ -18,9 +18,12 @@ import { currentDeviceMobile } from '@firestitch/device';
 import { FsFile } from '@firestitch/file';
 import { FsFormDirective } from '@firestitch/form';
 import { FsMessage } from '@firestitch/message';
+import { DisplayUploadStatus } from '@firestitch/upload';
 
 import { forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { delay, filter, finalize, mapTo, switchMap, takeUntil, tap } from 'rxjs/operators';
+
+import { HttpContext } from '@angular/common/http';
 
 import { ConversationStates } from '../../consts';
 import { ConversationItemState, ConversationItemType, ConversationState } from '../../enums';
@@ -129,6 +132,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
                 return this._conversationService.conversationConfig.conversationItemFilePost(
                   conversationItem,
                   fsFile.file,
+                  { context: new HttpContext().set(DisplayUploadStatus, true) },
                 );
               }),
             ])
