@@ -112,6 +112,7 @@
             [files]="files">
           <ng-template
             fs-file-preview-action
+            [show]="!submitting"
             [placement]="'top-right'"
             (click)="fileRemove($event.file)"
             [icon]="'close'">
