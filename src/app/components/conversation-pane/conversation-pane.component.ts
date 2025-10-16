@@ -132,7 +132,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
                 return this._conversationService.conversationConfig.conversationItemFilePost(
                   conversationItem,
                   fsFile.file,
-                  { context: new HttpContext().set(DisplayUploadStatus, true) },
+                  { context: new HttpContext().set(DisplayUploadStatus, false) },
                 );
               }),
             ])
