@@ -168,6 +168,10 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
     this.messageForm.dirty();
   }
 
+  public fileRemove(file: FsFile) {
+    this.files = this.files.filter((f) => f !== file);
+  }
+
   public messageKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
