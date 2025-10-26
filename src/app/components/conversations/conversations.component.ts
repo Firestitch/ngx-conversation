@@ -22,14 +22,23 @@ import { ConversationService } from '../../services';
 import { Account, Conversation, ConversationConfig } from '../../types';
 import { ConversationPaneComponent } from '../conversation-pane';
 import { ConversationsPaneComponent } from '../conversations-pane';
+import { NgClass } from '@angular/common';
+import { ConversationsPaneComponent as ConversationsPaneComponent_1 } from '../conversations-pane/conversations-pane.component';
+import { ConversationPaneComponent as ConversationPaneComponent_1 } from '../conversation-pane/conversation-pane.component';
 
 
 @Component({
-  selector: 'fs-conversations',
-  templateUrl: './conversations.component.html',
-  styleUrls: ['./conversations.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ConversationService],
+    selector: 'fs-conversations',
+    templateUrl: './conversations.component.html',
+    styleUrls: ['./conversations.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [ConversationService],
+    standalone: true,
+    imports: [
+        NgClass,
+        ConversationsPaneComponent_1,
+        ConversationPaneComponent_1,
+    ],
 })
 export class FsConversationsComponent implements OnInit, OnDestroy, AfterContentInit, OnInit {
 

@@ -12,7 +12,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 
 import { list } from '@firestitch/common';
-import { ButtonStyle, FilterConfig, ItemType } from '@firestitch/filter';
+import { ButtonStyle, FilterConfig, ItemType, FilterComponent } from '@firestitch/filter';
 
 import { Subject } from 'rxjs';
 
@@ -22,13 +22,28 @@ import { hasAdminRole } from '../../helpers';
 import { ConversationService } from '../../services';
 import { Conversation, ConversationAction } from '../../types';
 import { ParticipantsAddComponent } from '../participants-add';
+import { NgTemplateOutlet } from '@angular/common';
+import { MatIconAnchor, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { ConversationsListParticipantsComponent } from '../conversation-list-participants/conversation-list-participants.component';
+import { FsMenuModule } from '@firestitch/menu';
 
 
 @Component({
-  selector: 'app-conversation-header',
-  templateUrl: './conversation-header.component.html',
-  styleUrls: ['./conversation-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-conversation-header',
+    templateUrl: './conversation-header.component.html',
+    styleUrls: ['./conversation-header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgTemplateOutlet,
+        MatIconAnchor,
+        MatIcon,
+        ConversationsListParticipantsComponent,
+        FilterComponent,
+        MatIconButton,
+        FsMenuModule,
+    ],
 })
 export class ConversationHeaderComponent implements OnDestroy, OnInit {
 

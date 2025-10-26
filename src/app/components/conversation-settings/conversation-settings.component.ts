@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy, ChangeDetectorRef, Inject,
 } from '@angular/core';
 
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 
 import { index } from '@firestitch/common';
 import { FsMessage } from '@firestitch/message';
@@ -16,12 +16,50 @@ import { ConversationStates } from '../../consts';
 import { Account, Conversation } from '../../types';
 import { ConversationService } from '../../services';
 import { hasAdminRole } from '../../helpers';
+import { FormsModule } from '@angular/forms';
+import { FsFormModule } from '@firestitch/form';
+import { FsDialogModule } from '@firestitch/dialog';
+import { FsSkeletonModule } from '@firestitch/skeleton';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatTabGroup, MatTab, MatTabContent } from '@angular/material/tabs';
+import { FsTabsModule } from '@firestitch/tabs';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { ParticipantsListComponent } from '../participants-list/participants-list.component';
+import { MatButton } from '@angular/material/button';
 
 
 @Component({
-  templateUrl: './conversation-settings.component.html',
-  styleUrls: ['./conversation-settings.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './conversation-settings.component.html',
+    styleUrls: ['./conversation-settings.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FormsModule,
+        FsFormModule,
+        FsDialogModule,
+        MatDialogTitle,
+        FsSkeletonModule,
+        CdkScrollable,
+        MatDialogContent,
+        MatTabGroup,
+        FsTabsModule,
+        MatTab,
+        MatTabContent,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatSelect,
+        MatOption,
+        NgTemplateOutlet,
+        ParticipantsListComponent,
+        MatDialogActions,
+        MatButton,
+        MatDialogClose,
+    ],
 })
 export class ConversationSettingsComponent implements OnInit, OnDestroy {
 

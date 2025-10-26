@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { format } from '@firestitch/date';
 import { ItemType } from '@firestitch/filter';
-import { FsListComponent, FsListConfig, PaginationStrategy } from '@firestitch/list';
+import { FsListComponent, FsListConfig, PaginationStrategy, FsListColumnDirective, FsListCellDirective, FsListContentDirective } from '@firestitch/list';
 import { FsMessage } from '@firestitch/message';
 
 import { Subject, of, timer } from 'rxjs';
@@ -26,13 +26,33 @@ import { ConversationRole, ConversationState } from '../../enums';
 import { ConversationService } from '../../services';
 import { Conversation, ConversationAction, ConversationConfig } from '../../types';
 import { ConversationCreateComponent } from '../conversation-create';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatTabGroup, MatTab, MatTabLabel } from '@angular/material/tabs';
+import { FsTabsModule } from '@firestitch/tabs';
+import { ConversationsListParticipantsComponent } from '../conversation-list-participants/conversation-list-participants.component';
 
 
 @Component({
-  selector: 'app-conversations-pane',
-  templateUrl: './conversations-pane.component.html',
-  styleUrls: ['./conversations-pane.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-conversations-pane',
+    templateUrl: './conversations-pane.component.html',
+    styleUrls: ['./conversations-pane.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FsListComponent,
+        NgClass,
+        FsListColumnDirective,
+        FsListCellDirective,
+        NgTemplateOutlet,
+        MatTooltip,
+        FsListContentDirective,
+        MatTabGroup,
+        FsTabsModule,
+        MatTab,
+        MatTabLabel,
+        ConversationsListParticipantsComponent,
+    ],
 })
 export class ConversationsPaneComponent implements OnInit, OnDestroy {
 

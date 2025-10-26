@@ -5,21 +5,41 @@ import {
   OnInit,
 } from '@angular/core';
 
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 
 import { ItemType } from '@firestitch/filter';
-import { FsListConfig } from '@firestitch/list';
+import { FsListConfig, FsListComponent, FsListColumnDirective, FsListCellDirective } from '@firestitch/list';
 
 import { map } from 'rxjs/operators';
 
 import { ConversationService } from '../../services';
 import { Account, Conversation, ConversationItem } from '../../types';
+import { FsDialogModule } from '@firestitch/dialog';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { ConversationParticipantComponent } from '../conversation-participant/conversation-participant.component';
+import { MatButton } from '@angular/material/button';
+import { FsFormModule } from '@firestitch/form';
 
 
 @Component({
-  templateUrl: './conversation-read-participants-dialog.component.html',
-  styleUrls: ['./conversation-read-participants-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './conversation-read-participants-dialog.component.html',
+    styleUrls: ['./conversation-read-participants-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FsDialogModule,
+        MatDialogTitle,
+        CdkScrollable,
+        MatDialogContent,
+        FsListComponent,
+        FsListColumnDirective,
+        FsListCellDirective,
+        ConversationParticipantComponent,
+        MatDialogActions,
+        MatButton,
+        FsFormModule,
+        MatDialogClose,
+    ],
 })
 export class ConversationReadParticipantsDialogComponent implements OnInit {
 

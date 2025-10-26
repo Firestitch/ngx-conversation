@@ -2,7 +2,8 @@ import { Directive } from '@angular/core';
 
 
 @Directive({
-  selector: '[fsConversationHeader]',
+    selector: '[fsConversationHeader]',
+    standalone: true,
 })
 export class ConversationHeaderDirective {
 

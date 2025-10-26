@@ -6,13 +6,16 @@ import {
 } from '@angular/core';
 
 import { ConversationParticipant } from '../../types';
+import { ConversationParticipantComponent } from '../conversation-participant/conversation-participant.component';
 
 
 @Component({
-  selector: 'app-conversation-participants',
-  templateUrl: './conversation-participants.component.html',
-  styleUrls: ['./conversation-participants.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-conversation-participants',
+    templateUrl: './conversation-participants.component.html',
+    styleUrls: ['./conversation-participants.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ConversationParticipantComponent],
 })
 export class ConversationParticipantsComponent implements OnInit {
 

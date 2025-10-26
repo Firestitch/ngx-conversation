@@ -9,7 +9,7 @@ import {
 
 import { MatDialog } from '@angular/material/dialog';
 
-import { FsListActionSelected, FsListComponent, FsListConfig } from '@firestitch/list';
+import { FsListActionSelected, FsListComponent, FsListConfig, FsListColumnDirective, FsListCellDirective } from '@firestitch/list';
 import { FsPrompt } from '@firestitch/prompt';
 import { SelectionActionType } from '@firestitch/selection';
 
@@ -20,13 +20,21 @@ import { FsMessage } from '@firestitch/message';
 import { ConversationService } from '../../services';
 import { Conversation, ConversationParticipant } from '../../types';
 import { ParticipantsAddComponent } from '../participants-add';
+import { FsBadgeModule } from '@firestitch/badge';
 
 
 @Component({
-  selector: 'app-participants-list',
-  templateUrl: './participants-list.component.html',
-  styleUrls: ['./participants-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-participants-list',
+    templateUrl: './participants-list.component.html',
+    styleUrls: ['./participants-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FsListComponent,
+        FsListColumnDirective,
+        FsListCellDirective,
+        FsBadgeModule,
+    ],
 })
 export class ParticipantsListComponent implements OnInit, OnDestroy {
 

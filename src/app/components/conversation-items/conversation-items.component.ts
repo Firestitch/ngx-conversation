@@ -10,10 +10,7 @@ import {
 
 import { MatDialog } from '@angular/material/dialog';
 
-import {
-  FsGalleryConfig, FsGalleryItem,
-  MimeType, ThumbnailScale,
-} from '@firestitch/gallery';
+import { FsGalleryConfig, FsGalleryItem, MimeType, ThumbnailScale, FsGalleryModule } from '@firestitch/gallery';
 import { FsPrompt } from '@firestitch/prompt';
 
 import { Observable, of, Subject, timer } from 'rxjs';
@@ -25,13 +22,41 @@ import {
 import { ConversationService } from '../../services';
 import { Account, Conversation, ConversationItem, ConversationParticipant } from '../../types';
 import { ConversationReadParticipantsDialogComponent } from '../conversation-read-participants-dialog';
+import { NgClass, NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { ConversationParticipantComponent } from '../conversation-participant/conversation-participant.component';
+import { FsDateModule } from '@firestitch/date';
+import { FsPopoverModule } from '@firestitch/popover';
+import { MatIcon } from '@angular/material/icon';
+import { FsMenuModule } from '@firestitch/menu';
+import { MatTooltip } from '@angular/material/tooltip';
+import { FsLinkModule } from '@firestitch/link';
+import { MatIconButton } from '@angular/material/button';
+import { FsHtmlRendererModule } from '@firestitch/html-editor';
+import { ConversationReadParticipantsPopoverComponent } from '../conversation-read-participants-popover/conversation-read-participants-popover.component';
 
 
 @Component({
-  selector: 'app-conversation-items',
-  templateUrl: './conversation-items.component.html',
-  styleUrls: ['./conversation-items.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-conversation-items',
+    templateUrl: './conversation-items.component.html',
+    styleUrls: ['./conversation-items.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgClass,
+        ConversationParticipantComponent,
+        FsDateModule,
+        FsPopoverModule,
+        MatIcon,
+        FsMenuModule,
+        MatTooltip,
+        FsLinkModule,
+        FsGalleryModule,
+        NgTemplateOutlet,
+        MatIconButton,
+        FsHtmlRendererModule,
+        ConversationReadParticipantsPopoverComponent,
+        AsyncPipe,
+    ],
 })
 export class ConversationItemsComponent implements OnInit, OnDestroy {
 

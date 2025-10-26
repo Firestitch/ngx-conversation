@@ -14,13 +14,16 @@ import { takeUntil } from 'rxjs/operators';
 
 import { ConversationService } from '../../services';
 import { Account, Conversation, ConversationItem, ConversationParticipant } from '../../types';
+import { ConversationParticipantComponent } from '../conversation-participant/conversation-participant.component';
 
 
 @Component({
-  selector: 'app-conversation-read-participants-popover',
-  templateUrl: './conversation-read-participants-popover.component.html',
-  styleUrls: ['./conversation-read-participants-popover.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-conversation-read-participants-popover',
+    templateUrl: './conversation-read-participants-popover.component.html',
+    styleUrls: ['./conversation-read-participants-popover.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ConversationParticipantComponent],
 })
 export class ConversationReadParticipantsPopoverComponent implements OnInit, OnDestroy {
 

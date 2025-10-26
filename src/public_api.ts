@@ -5,7 +5,7 @@ export {
   ConversationsConversationDirective, ConversationsConversationNameDirective,
 } from './app/directives';
 export * from './app/enums';
-export { FsConversationModule } from './app/fs-conversation.module';
+
 export {
   Conversation, ConversationConfig, ConversationItem,
   ConversationItemMessage, ConversationParticipant,

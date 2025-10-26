@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 
 
-@Pipe({ name: 'conversationBadgeName' })
+@Pipe({
+    name: 'conversationBadgeName',
+    standalone: true
+})
 export class ConversationBadgeNamePipe implements PipeTransform {
   public transform(conversationParticipantCount, accountTop, accountBottom) {
     const otherParticipantCount = conversationParticipantCount - 2;

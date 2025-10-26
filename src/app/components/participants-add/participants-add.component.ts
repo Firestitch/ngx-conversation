@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 
 import { FsMessage } from '@firestitch/message';
 
@@ -9,12 +9,31 @@ import { map, tap } from 'rxjs/operators';
 
 import { ConversationService } from '../../services';
 import { Account, Conversation, ConversationParticipant } from '../../types';
+import { FormsModule } from '@angular/forms';
+import { FsFormModule } from '@firestitch/form';
+import { FsDialogModule } from '@firestitch/dialog';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { FsAutocompleteChipsModule } from '@firestitch/autocomplete-chips';
+import { MatButton } from '@angular/material/button';
 
 
 @Component({
-  templateUrl: './participants-add.component.html',
-  styleUrls: ['./participants-add.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './participants-add.component.html',
+    styleUrls: ['./participants-add.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FormsModule,
+        FsFormModule,
+        FsDialogModule,
+        MatDialogTitle,
+        CdkScrollable,
+        MatDialogContent,
+        FsAutocompleteChipsModule,
+        MatDialogActions,
+        MatButton,
+        MatDialogClose,
+    ],
 })
 export class ParticipantsAddComponent implements OnInit, OnDestroy {
 

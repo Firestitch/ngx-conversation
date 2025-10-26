@@ -2,7 +2,8 @@ import { Directive } from '@angular/core';
 
 
 @Directive({
-  selector: '[fsConversationsConversationName]',
+    selector: '[fsConversationsConversationName]',
+    standalone: true,
 })
 export class ConversationsConversationNameDirective {
 

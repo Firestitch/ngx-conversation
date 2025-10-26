@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 
 
-@Pipe({ name: 'conversationName' })
+@Pipe({
+    name: 'conversationName',
+    standalone: true
+})
 export class ConversationNamePipe implements PipeTransform {
   public transform(conversation) {
     if(conversation.name) {

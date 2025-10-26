@@ -8,13 +8,17 @@ import {
 
 import { ConversationParticipantType } from '../../enums';
 import { ConversationService } from '../../services';
+import { FsBadgeModule } from '@firestitch/badge';
+import { MatTooltip } from '@angular/material/tooltip';
 
 
 @Component({
-  selector: 'app-conversation-participant',
-  templateUrl: './conversation-participant.component.html',
-  styleUrls: ['./conversation-participant.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-conversation-participant',
+    templateUrl: './conversation-participant.component.html',
+    styleUrls: ['./conversation-participant.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [FsBadgeModule, MatTooltip],
 })
 export class ConversationParticipantComponent implements OnInit {
 
