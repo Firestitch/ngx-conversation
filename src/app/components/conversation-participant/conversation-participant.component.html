@@ -1,12 +1,14 @@
 <div class="row">
-  <ng-container *ngIf="showBadge && account.avatar">
-    <fs-badge 
+  @if (showBadge && account.avatar) {
+    <fs-badge
       [size]="size"
-      [matTooltip]="name" 
-      [matTooltipDisabled]="!showTooltip"    
-      [color]="'#ccc'"       
+      [matTooltip]="name"
+      [matTooltipDisabled]="!showTooltip"
+      [color]="'#ccc'"
       [image]="account.avatar.tiny">
     </fs-badge>
-  </ng-container>
-  <span class="name" *ngIf="showName">{{name}}</span>
+  }
+  @if (showName) {
+    <span class="name">{{name}}</span>
+  }
 </div>

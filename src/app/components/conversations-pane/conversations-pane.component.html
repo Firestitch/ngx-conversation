@@ -1,75 +1,76 @@
-<fs-list 
-    [config]="listConfig"
-    [ngClass]="{ 'has-tabs': conversationService.tabs.account || conversationService.tabs.open || conversationService.tabs.closed }">
+<fs-list
+  [config]="listConfig"
+  [ngClass]="{ 'has-tabs': conversationService.tabs.account || conversationService.tabs.open || conversationService.tabs.closed }">
   <fs-list-column [class]="['col-converstaion']">
     <ng-template fs-list-cell let-conversation="row">
-      <div 
-          class="converstaion-row" 
-          [ngClass]="{ selected: selectedConversation?.id === conversation.id }" [attr.data]="'converstaion-row-' + conversation.id"
-          (click)="openConversation(conversation)">
+      <div
+        class="converstaion-row"
+        [ngClass]="{ selected: selectedConversation?.id === conversation.id }" [attr.data]="'converstaion-row-' + conversation.id"
+        (click)="openConversation(conversation)">
         <div class="converstaion">
-          <ng-container *ngIf="conversationsConversationTemplate">
+          @if (conversationsConversationTemplate) {
             <ng-container [ngTemplateOutlet]="conversationsConversationTemplate" [ngTemplateOutletContext]="{ conversation: conversation, template: conversationTemplate }"></ng-container>
-          </ng-container>
-          <ng-container *ngIf="!conversationsConversationTemplate">
+          }
+          @if (!conversationsConversationTemplate) {
             <ng-container [ngTemplateOutlet]="conversationTemplate" [ngTemplateOutletContext]="{ conversation: conversation }"></ng-container>
-          </ng-container>
+          }
         </div>
-        <div
-          *ngIf="!!conversation.unread"
-          class="unread"
-          [ngClass]="{ 'has-unread': !!conversation.unread }"
-          matTooltip="Unread">
-        </div>
+        @if (!!conversation.unread) {
+          <div
+            class="unread"
+            [ngClass]="{ 'has-unread': !!conversation.unread }"
+            matTooltip="Unread">
+          </div>
+        }
       </div>
     </ng-template>
   </fs-list-column>
   <ng-container fs-list-content>
-    <ng-container *ngIf="conversationService.tabs.account || conversationService.tabs.open || conversationService.tabs.closed">
+    @if (conversationService.tabs.account || conversationService.tabs.open || conversationService.tabs.closed) {
       <mat-tab-group
-          fsTabs
-          [mobileSticky]="false"
-          [selected]="tab"
-          mat-stretch-tabs="false"
-          (selectedChange)="tabChange($event)">
-        <ng-container *ngIf="conversationService.tabs.account">
+        fsTabs
+        [mobileSticky]="false"
+        [selected]="tab"
+        mat-stretch-tabs="false"
+        (selectedChange)="tabChange($event)">
+        @if (conversationService.tabs.account) {
           <mat-tab name="account">
             <ng-template mat-tab-label>
-              Inbox 
-              <ng-container *ngIf="conversationsStats.account.unread">
+              Inbox
+              @if (conversationsStats.account.unread) {
                 <span class="unread has-unread"></span>
-              </ng-container>
+              }
             </ng-template>
           </mat-tab>
-        </ng-container>
-        <ng-container *ngIf="conversationService.tabs.open">
+        }
+        @if (conversationService.tabs.open) {
           <mat-tab name="open">
             <ng-template mat-tab-label>
               Open
-              <ng-container *ngIf="conversationsStats.open.count">
+              @if (conversationsStats.open.count) {
                 ({{conversationsStats.open.count}})
-              </ng-container>
-              <ng-container *ngIf="conversationsStats.open.unread">
+              }
+              @if (conversationsStats.open.unread) {
                 <span class="unread has-unread"></span>
-              </ng-container>
+              }
             </ng-template>
           </mat-tab>
-        </ng-container>
-        <ng-container *ngIf="conversationService.tabs.closed">
+        }
+        @if (conversationService.tabs.closed) {
           <mat-tab name="closed">
             <ng-template mat-tab-label>
               Closed
-              <ng-container *ngIf="conversationsStats.closed.count">
+              @if (conversationsStats.closed.count) {
                 ({{conversationsStats.closed.count}})
-              </ng-container>
-              <ng-container *ngIf="conversationsStats.closed.unread">
+              }
+              @if (conversationsStats.closed.unread) {
                 <span class="unread has-unread"></span>
-              </ng-container>
-            </ng-template>            
+              }
+            </ng-template>
           </mat-tab>
-        </ng-container>
+        }
       </mat-tab-group>
-    </ng-container>
+    }
   </ng-container>
 </fs-list>
 

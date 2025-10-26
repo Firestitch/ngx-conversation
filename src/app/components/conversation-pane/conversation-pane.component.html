@@ -1,9 +1,9 @@
 <form
-    fsForm
-    [submit]="messageSend"
-    #messageForm
-    [ngClass]="{ inited: inited }">
-  <ng-container *ngIf="conversation">
+  fsForm
+  [submit]="messageSend"
+  #messageForm
+  [ngClass]="{ inited: inited }">
+  @if (conversation) {
     <app-conversation-header
       [conversationService]="conversationService"
       [conversation]="conversation"
@@ -13,8 +13,8 @@
       (conversationChange)="conversationReload()">
     </app-conversation-header>
     <div
-        class="conversation-container"
-        #conversationContainer>
+      class="conversation-container"
+      #conversationContainer>
       <div class="conversation">
         <app-conversation-items
           [account]="account"
@@ -24,35 +24,41 @@
           (conversationInitialLoad)="conversationScrollToBottom()"
           (conversationChange)="conversationReload()">
         </app-conversation-items>
-        <div
+        @if (typing.state==='single') {
+          <div
             class="typing"
-            *ngIf="typing.state==='single'">
-          {{ typing.name }} is typing..
-        </div>
-        <div
+            >
+            {{ typing.name }} is typing..
+          </div>
+        }
+        @if (typing.state==='multiple') {
+          <div
             class="typing"
-            *ngIf="typing.state==='multiple'">
-          People are typing..
-        </div>
-        <div
+            >
+            People are typing..
+          </div>
+        }
+        @if (typing.state==='none') {
+          <div
             class="typing"
-            *ngIf="typing.state==='none'">
-          &nbsp;
-        </div>
+            >
+            &nbsp;
+          </div>
+        }
       </div>
-      <ng-container *ngIf="inited && !joined">
+      @if (inited && !joined) {
         <div class="join-conversation">
           <button
-              mat-raised-button
-              (click)="conversationJoin()"
-              color="primary"
-              type="button">
+            mat-raised-button
+            (click)="conversationJoin()"
+            color="primary"
+            type="button">
             Join Conversation
           </button>
         </div>
-      </ng-container>
+      }
     </div>
-    <ng-container *ngIf="joined">
+    @if (joined) {
       <div class="message-send-container">
         <div class="message-actions">
           <mat-form-field class="form-field-padless">
@@ -70,35 +76,35 @@
             </textarea>
           </mat-form-field>
           <div class="buttons">
-            <ng-container *ngIf="!submitting">
+            @if (!submitting) {
               <button
-                  mat-icon-button
-                  type="submit"
-                  class="button send-button"
-                  [disabled]="(!message && !files.length) || conversation.state === ConversationState.Closed"
-                  color="primary">
+                mat-icon-button
+                type="submit"
+                class="button send-button"
+                [disabled]="(!message && !files.length) || conversation.state === ConversationState.Closed"
+                color="primary">
                 <mat-icon>
                   send
                 </mat-icon>
               </button>
-            </ng-container>
-            <ng-container *ngIf="submitting">
+            }
+            @if (submitting) {
               <div class="spinner">
                 <mat-spinner [diameter]="25"></mat-spinner>
               </div>
-            </ng-container>
+            }
             <fs-file
-                [disabled]="conversation.state === ConversationState.Closed"
-                (select)="fileSelect($event)"
-                [multiple]="true"
-                imageWidth="1200"
-                imageQuality=".8">
+              [disabled]="conversation.state === ConversationState.Closed"
+              (select)="fileSelect($event)"
+              [multiple]="true"
+              imageWidth="1200"
+              imageQuality=".8">
               <a
-                  mat-icon-button
-                  class="button file-button"
-                  [disabled]="conversation.state === ConversationState.Closed || submitting"
-                  type="button"
-                  color="basic">
+                mat-icon-button
+                class="button file-button"
+                [disabled]="conversation.state === ConversationState.Closed || submitting"
+                type="button"
+                color="basic">
                 <mat-icon>
                   attach_file
                 </mat-icon>
@@ -107,9 +113,9 @@
           </div>
         </div>
         <fs-file-previews
-            [previewWidth]="120"
-            [previewHeight]="120"
-            [files]="files">
+          [previewWidth]="120"
+          [previewHeight]="120"
+          [files]="files">
           <ng-template
             fs-file-preview-action
             [show]="!submitting"
@@ -119,6 +125,6 @@
           </ng-template>
         </fs-file-previews>
       </div>
-    </ng-container>
-  </ng-container>
+    }
+  }
 </form>

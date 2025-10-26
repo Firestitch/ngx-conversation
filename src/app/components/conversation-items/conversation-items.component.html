@@ -1,162 +1,170 @@
 <div
-    class="items"
-    [ngClass]="{ initialized: initialized }">
-  <div
-      *ngFor="let conversationItem of conversationItems; let index = index; trackBy: trackByconversationItem"
+  class="items"
+  [ngClass]="{ initialized: initialized }">
+  @for (conversationItem of conversationItems; track trackByconversationItem(index, conversationItem); let index = $index) {
+    <div
       [class]="'item item-type-' + conversationItem.type"
       [ngClass]="{
         'active-account': conversationItem.conversationParticipant?.id === sessionConversationParticipant?.id,
         'deleted': conversationItem.state === ConversationItemState.Deleted
       }">
-    <div
-        class="info"
-        *ngIf="conversationItem.type === ConversationItemType.Message">
-      <ng-container *ngIf="conversationItem.conversationParticipant?.id !== sessionConversationParticipant?.id">
-        <app-conversation-participant
-          [size]="30"
-          [conversationParticipant]="conversationItem.conversationParticipant"
-          [showBadge]="true"
-          [showTooltip]="true">
-        </app-conversation-participant>
-        <app-conversation-participant
-          class="name"
-          [conversationParticipant]="conversationItem.conversationParticipant"
-          [showName]="true"
-          [showTooltip]="true">
-        </app-conversation-participant>
-      </ng-container>
-      <div class="row">
-        <fs-date-ago [date]="conversationItem.createDate"></fs-date-ago>
-        <ng-container *ngIf="canShowReadParticipants | async">
-          <fs-popover
-              [template]="readTemplate"
-              [indication]="false"
-              [autoShow]="false"
-              [data]="conversationItem">
-            <a (click)="openReadParticipants(conversationItem)">
-              <span class="read">
-                <mat-icon>
-                  remove_red_eye
-                </mat-icon>
-              </span>
-            </a>
-          </fs-popover>
-        </ng-container>
-      </div>
-      <ng-container *ngIf="conversationItem.state === ConversationItemState.Active">
-        <fs-menu
-            class="item-menu"
-            *ngIf="conversationItem.canDelete">
-          <ng-template
-              *ngIf="conversationItem.conversationItemFiles.length > 1"
-              fs-menu-item
-              (click)="filesDownload(conversationItem)">
-            Download All
-          </ng-template>
-          <ng-template
-              fs-menu-item
-              (click)="conversationItemDelete(conversationItem)">
-            Delete
-          </ng-template>
-        </fs-menu>
-      </ng-container>
-    </div>
-    <ng-container *ngIf="conversationItem.type === ConversationItemType.Message">
-      <div class="message-container">
-        <div class="content">
-          <div class="content-container">
-            <div
-                class="message"
-                [matTooltip]="'Deleted'"
-                [matTooltipDisabled]="conversationItem.state === ConversationItemState.Active"
-                *ngIf="conversationItem.message">
-              <span
-                fsLink
-                [openWindow]="true"
-                [innerHTML]="conversationItem.message">
-              </span>
-            </div>
-            <fs-gallery
-                [config]="conversationItem.galleryConfig"
-                *ngIf="conversationItem.conversationItemFiles.length">
-              <ng-template
-                  fsGalleryThumbnail
-                  let-item="item"
-                  let-template="template">
-                <ng-container
-                  [ngTemplateOutlet]="template"
-                  [ngTemplateOutletContext]="{ item: item }">
-                </ng-container>
-                <ng-container *ngIf="item.mime.type !== MimeType.Image">
-                  <fs-gallery-thumbnail-info
-                    [showIcon]="false"
-                    [item]="item">
-                  </fs-gallery-thumbnail-info>
-                </ng-container>
-                <button
-                    type="button"
-                    [fsMenuTriggerFor]="menu"
-                    mat-icon-button
-                    class="file-menu"
-                    (click)="$event.stopPropagation()">
-                  <mat-icon>
-                    more_vert
-                  </mat-icon>
-                </button>
-                <fs-menu #menu>
+      @if (conversationItem.type === ConversationItemType.Message) {
+        <div
+          class="info"
+          >
+          @if (conversationItem.conversationParticipant?.id !== sessionConversationParticipant?.id) {
+            <app-conversation-participant
+              [size]="30"
+              [conversationParticipant]="conversationItem.conversationParticipant"
+              [showBadge]="true"
+              [showTooltip]="true">
+            </app-conversation-participant>
+            <app-conversation-participant
+              class="name"
+              [conversationParticipant]="conversationItem.conversationParticipant"
+              [showName]="true"
+              [showTooltip]="true">
+            </app-conversation-participant>
+          }
+          <div class="row">
+            <fs-date-ago [date]="conversationItem.createDate"></fs-date-ago>
+            @if (canShowReadParticipants | async) {
+              <fs-popover
+                [template]="readTemplate"
+                [indication]="false"
+                [autoShow]="false"
+                [data]="conversationItem">
+                <a (click)="openReadParticipants(conversationItem)">
+                  <span class="read">
+                    <mat-icon>
+                      remove_red_eye
+                    </mat-icon>
+                  </span>
+                </a>
+              </fs-popover>
+            }
+          </div>
+          @if (conversationItem.state === ConversationItemState.Active) {
+            @if (conversationItem.canDelete) {
+              <fs-menu
+                class="item-menu"
+                >
+                @if (conversationItem.conversationItemFiles.length > 1) {
                   <ng-template
-                      fs-menu-item
-                      (click)="fileDownload(conversationItem, item.data)">
-                    Download
+                    fs-menu-item
+                    (click)="filesDownload(conversationItem)">
+                    Download All
                   </ng-template>
-                </fs-menu>
-              </ng-template>
-            </fs-gallery>
+                }
+                <ng-template
+                  fs-menu-item
+                  (click)="conversationItemDelete(conversationItem)">
+                  Delete
+                </ng-template>
+              </fs-menu>
+            }
+          }
+        </div>
+      }
+      @if (conversationItem.type === ConversationItemType.Message) {
+        <div class="message-container">
+          <div class="content">
+            <div class="content-container">
+              @if (conversationItem.message) {
+                <div
+                  class="message"
+                  [matTooltip]="'Deleted'"
+                  [matTooltipDisabled]="conversationItem.state === ConversationItemState.Active"
+                  >
+                  <span
+                    fsLink
+                    [openWindow]="true"
+                    [innerHTML]="conversationItem.message">
+                  </span>
+                </div>
+              }
+              @if (conversationItem.conversationItemFiles.length) {
+                <fs-gallery
+                  [config]="conversationItem.galleryConfig"
+                  >
+                  <ng-template
+                    fsGalleryThumbnail
+                    let-item="item"
+                    let-template="template">
+                    <ng-container
+                      [ngTemplateOutlet]="template"
+                      [ngTemplateOutletContext]="{ item: item }">
+                    </ng-container>
+                    @if (item.mime.type !== MimeType.Image) {
+                      <fs-gallery-thumbnail-info
+                        [showIcon]="false"
+                        [item]="item">
+                      </fs-gallery-thumbnail-info>
+                    }
+                    <button
+                      type="button"
+                      [fsMenuTriggerFor]="menu"
+                      mat-icon-button
+                      class="file-menu"
+                      (click)="$event.stopPropagation()">
+                      <mat-icon>
+                        more_vert
+                      </mat-icon>
+                    </button>
+                    <fs-menu #menu>
+                      <ng-template
+                        fs-menu-item
+                        (click)="fileDownload(conversationItem, item.data)">
+                        Download
+                      </ng-template>
+                    </fs-menu>
+                  </ng-template>
+                </fs-gallery>
+              }
+            </div>
           </div>
         </div>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="conversationItem.type === ConversationItemType.Notice">
-      <div class="message">
-        <fs-html-renderer [html]="conversationItem.message"></fs-html-renderer>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="
-        conversationItem.type === ConversationItemType.ParticipantAdd || 
-        conversationItem.type === ConversationItemType.ParticipantRemoved || 
-        conversationItem.type === ConversationItemType.Start">
-      <div class="info">
-        <ng-container *ngIf="conversationItem.type === ConversationItemType.ParticipantRemoved">
-          <ng-container *ngIf="conversationItem.lastConversationItemParticipantAddRemove?.account && conversationItem.conversationParticipantsRemovedCount === 1; else removed">
-            {{ conversationItem.lastConversationItemParticipantAddRemove.account.name }} Removed
-          </ng-container>
-          <ng-template #removed>
-            {{ conversationItem.conversationParticipantsRemovedCount === 1 ? '1 Participant' : conversationItem.conversationParticipantsRemovedCount + ' Participants' }}  Removed
-          </ng-template>
-        </ng-container>
-        <ng-container *ngIf="conversationItem.type === ConversationItemType.ParticipantAdd">
-          <ng-container *ngIf="conversationItem.lastConversationItemParticipantAddRemove?.account && conversationItem.conversationParticipantsAddedCount === 1; else added">
-            {{ conversationItem.lastConversationItemParticipantAddRemove.account.name }} Added
-          </ng-container>
-          <ng-template #added>
-            {{ conversationItem.conversationParticipantsAddedCount === 1 ? '1 Participant' : conversationItem.conversationParticipantsAddedCount + ' Participants' }}  Added
-          </ng-template>
-        </ng-container>
-        <ng-container *ngIf="conversationItem.type === ConversationItemType.Start">
-          Conversation Started
-        </ng-container>
-        <span class="dot">
-          ·
-        </span>
-        <fs-date-ago [date]="conversationItem.createDate"></fs-date-ago>
-      </div>
-    </ng-container>
-  </div>
+      }
+      @if (conversationItem.type === ConversationItemType.Notice) {
+        <div class="message">
+          <fs-html-renderer [html]="conversationItem.message"></fs-html-renderer>
+        </div>
+      }
+      @if (
+        conversationItem.type === ConversationItemType.ParticipantAdd ||
+        conversationItem.type === ConversationItemType.ParticipantRemoved ||
+        conversationItem.type === ConversationItemType.Start) {
+        <div class="info">
+          @if (conversationItem.type === ConversationItemType.ParticipantRemoved) {
+            @if (conversationItem.lastConversationItemParticipantAddRemove?.account && conversationItem.conversationParticipantsRemovedCount === 1) {
+              {{ conversationItem.lastConversationItemParticipantAddRemove.account.name }} Removed
+            } @else {
+              {{ conversationItem.conversationParticipantsRemovedCount === 1 ? '1 Participant' : conversationItem.conversationParticipantsRemovedCount + ' Participants' }}  Removed
+            }
+          }
+          @if (conversationItem.type === ConversationItemType.ParticipantAdd) {
+            @if (conversationItem.lastConversationItemParticipantAddRemove?.account && conversationItem.conversationParticipantsAddedCount === 1) {
+              {{ conversationItem.lastConversationItemParticipantAddRemove.account.name }} Added
+            } @else {
+              {{ conversationItem.conversationParticipantsAddedCount === 1 ? '1 Participant' : conversationItem.conversationParticipantsAddedCount + ' Participants' }}  Added
+            }
+          }
+          @if (conversationItem.type === ConversationItemType.Start) {
+            Conversation Started
+          }
+          <span class="dot">
+            ·
+          </span>
+          <fs-date-ago [date]="conversationItem.createDate"></fs-date-ago>
+        </div>
+      }
+    </div>
+  }
 </div>
 <ng-template
-    #readTemplate
-    let-conversationItem="data"
-    let-popover="popover">
+  #readTemplate
+  let-conversationItem="data"
+  let-popover="popover">
   <app-conversation-read-participants-popover
     [conversationService]="conversationService"
     [popover]="popover"

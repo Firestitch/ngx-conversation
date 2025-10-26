@@ -1,14 +1,16 @@
-<ng-container *ngIf="conversationParticipants">
+@if (conversationParticipants) {
   <div class="small">
     Read by {{readCount}}
   </div>
-
-  <div class="participants" *ngIf="conversationParticipants.length">
-    <app-conversation-participant
-      *ngFor="let conversationParticipant of conversationParticipants"
-      [showBadge]="true"
-      [showName]="true"
-      [conversationParticipant]="conversationParticipant">
-    </app-conversation-participant>
-  </div>
-</ng-container>
+  @if (conversationParticipants.length) {
+    <div class="participants">
+      @for (conversationParticipant of conversationParticipants; track conversationParticipant) {
+        <app-conversation-participant
+          [showBadge]="true"
+          [showName]="true"
+          [conversationParticipant]="conversationParticipant">
+        </app-conversation-participant>
+      }
+    </div>
+  }
+}

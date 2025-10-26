@@ -1,7 +1,8 @@
-<fs-chip 
-    *ngIf="conversationState" 
-    [backgroundColor]="conversationState.color" 
-    size="tiny" 
+@if (conversationState) {
+  <fs-chip
+    [backgroundColor]="conversationState.color"
+    size="tiny"
     color="#fff">
-  {{conversationState.name}}
-</fs-chip>
+    {{conversationState.name}}
+  </fs-chip>
+}

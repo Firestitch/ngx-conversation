@@ -1,26 +1,28 @@
-<fs-dialog *ngIf="!!listConfig">
-  <div mat-dialog-title>Read Status</div>
-  <mat-dialog-content>
-    <fs-list [config]="listConfig">
-      <fs-list-column title="Participant">
-        <ng-template fs-list-cell let-row="row">
-          <app-conversation-participant
-            [showBadge]="!!row.avatar"
-            [showName]="true"
-            [conversationParticipant]="row"
-            [service]="conversationService">
-          </app-conversation-participant>
-        </ng-template>
-      </fs-list-column>
-    </fs-list>
-  </mat-dialog-content>
-  <mat-dialog-actions>
-    <button
+@if (!!listConfig) {
+  <fs-dialog>
+    <div mat-dialog-title>Read Status</div>
+    <mat-dialog-content>
+      <fs-list [config]="listConfig">
+        <fs-list-column title="Participant">
+          <ng-template fs-list-cell let-row="row">
+            <app-conversation-participant
+              [showBadge]="!!row.avatar"
+              [showName]="true"
+              [conversationParticipant]="row"
+              [service]="conversationService">
+            </app-conversation-participant>
+          </ng-template>
+        </fs-list-column>
+      </fs-list>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button
         mat-button
         type="button"
         color="primary"
         [mat-dialog-close]="undefined">
-      Done
-    </button>
-  </mat-dialog-actions>
-</fs-dialog>
+        Done
+      </button>
+    </mat-dialog-actions>
+  </fs-dialog>
+}

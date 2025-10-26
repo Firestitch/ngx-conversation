@@ -1,73 +1,76 @@
-<div 
-    class="conversation-participant"
-    [ngStyle]="{ width: (size && conversation.recentConversationParticipants.length === 1 ? size + 'px' : null) }"
-    [ngClass]="{ 'conversation-participant-multiple': conversation.recentConversationParticipants.length > 1 }">
-  <ng-container *ngIf="conversation.recentConversationParticipants.length > 1">
-    <ng-container 
-      [ngTemplateOutlet]="participantsMutiple" 
+<div
+  class="conversation-participant"
+  [ngStyle]="{ width: (size && conversation.recentConversationParticipants.length === 1 ? size + 'px' : null) }"
+  [ngClass]="{ 'conversation-participant-multiple': conversation.recentConversationParticipants.length > 1 }">
+  @if (conversation.recentConversationParticipants.length > 1) {
+    <ng-container
+      [ngTemplateOutlet]="participantsMutiple"
       [ngTemplateOutletContext]="{ 
         accountTop: conversation.recentConversationParticipants[0],
         accountBottom: conversation.recentConversationParticipants[1],
         conversationParticipantCount: conversation.conversationParticipantCount
       }">
     </ng-container>
-    <ng-template 
-        #participantsMutiple 
-        let-accountTop="accountTop" 
-        let-accountBottom="accountBottom"
-        let-conversationParticipantCount="conversationParticipantCount">
+    <ng-template
+      #participantsMutiple
+      let-accountTop="accountTop"
+      let-accountBottom="accountBottom"
+      let-conversationParticipantCount="conversationParticipantCount">
       <div [matTooltip]="conversationParticipantCount | conversationBadgeName:accountTop:accountBottom">
-        <app-conversation-participant 
+        <app-conversation-participant
           class="top"
           [showBadge]="true"
           [size]="size || 30"
           [conversationParticipant]="accountTop">
-        </app-conversation-participant> 
-        <app-conversation-participant 
+        </app-conversation-participant>
+        <app-conversation-participant
           class="bottom"
           [showBadge]="true"
           [size]="size || 30"
           [conversationParticipant]="accountBottom">
-        </app-conversation-participant> 
+        </app-conversation-participant>
       </div>
     </ng-template>
-  </ng-container>
-  <ng-container *ngIf="conversation.recentConversationParticipants.length === 1">
-    <app-conversation-participant 
+  }
+  @if (conversation.recentConversationParticipants.length === 1) {
+    <app-conversation-participant
       [showBadge]="true"
       [showTooltip]="true"
       [size]="size || 40"
       [conversationParticipant]="conversation.recentConversationParticipants[0]">
-    </app-conversation-participant>   
-  </ng-container>
+    </app-conversation-participant>
+  }
 </div>
 <div [ngClass]="{ 'participant-multiple-info': conversation.recentConversationParticipants.length > 1 }">
   <div class="name">
-    <ng-container *ngIf="conversationsConversationNameTemplate; else conversationName">
+    @if (conversationsConversationNameTemplate) {
       <ng-container [ngTemplateOutlet]="conversationsConversationNameTemplate" [ngTemplateOutletContext]="{ conversation: conversation, template: conversationName }"></ng-container>
-    </ng-container>
+    } @else {
+      <a>{{conversation | conversationName}}</a>
+    }
 
     <ng-template #conversationName>
       <a>{{conversation | conversationName}}</a>
     </ng-template>
-  </div>  
-  <div class="last-conversation-item small" *ngIf="!hideLastConversationItemInfo && conversation.lastConversationItem">
-    <div class="summary">
-      <ng-container *ngIf="conversation.lastConversationItem.message; else lastFile">
-        <div class="message">
-          {{conversation.lastConversationItem.conversationParticipant.account.firstName}}: {{conversation.lastConversationItem.message}}
-        </div>
-      </ng-container>
-      <ng-template #lastFile>
-        <ng-container *ngIf="conversation.lastConversationItem.lastConversationItemFile">
-          <div class="file">
-            {{conversation.lastConversationItem.lastConversationItemFile.filename}}
+  </div>
+  @if (!hideLastConversationItemInfo && conversation.lastConversationItem) {
+    <div class="last-conversation-item small">
+      <div class="summary">
+        @if (conversation.lastConversationItem.message) {
+          <div class="message">
+            {{conversation.lastConversationItem.conversationParticipant.account.firstName}}: {{conversation.lastConversationItem.message}}
           </div>
-        </ng-container>
-      </ng-template>
-      <div class="small create-date">
-        <fs-date-ago [date]="conversation.lastConversationItem.createDate"></fs-date-ago>
+        } @else {
+          @if (conversation.lastConversationItem.lastConversationItemFile) {
+            <div class="file">
+              {{conversation.lastConversationItem.lastConversationItemFile.filename}}
+            </div>
+          }
+        }
+        <div class="small create-date">
+          <fs-date-ago [date]="conversation.lastConversationItem.createDate"></fs-date-ago>
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>

@@ -1,6 +1,6 @@
 <div class="heading-container">
-  <ng-container *ngIf="conversationService.conversationHeadingTemplate; else template">
-    <ng-container 
+  @if (conversationService.conversationHeadingTemplate) {
+    <ng-container
       [ngTemplateOutlet]="conversationService.conversationHeadingTemplate"
       [ngTemplateOutletContext]="{
         conversation: conversation,
@@ -9,7 +9,10 @@
         infoTemplate: infoTemplate
       }">
     </ng-container>
-  </ng-container>     
+  } @else {
+    <ng-container [ngTemplateOutlet]="infoTemplate"></ng-container>
+    <ng-container [ngTemplateOutlet]="actionsTemplate"></ng-container>
+  }
 </div>
 
 <ng-template #template>
@@ -19,63 +22,76 @@
 
 <ng-template #infoTemplate>
   <div class="info">
-    <a  
-        class="close"
-        mat-icon-button
-        (click)="conversationClose.emit()">
+    <a
+      class="close"
+      mat-icon-button
+      (click)="conversationClose.emit()">
       <mat-icon>arrow_back_ios_new</mat-icon>
     </a>
-    <a 
-        *ngIf="hasAdminRole; else conversationParticipants"
+    @if (hasAdminRole) {
+      <a
         class="participants"
         (click)="settingsClicked('participants')">
-      <ng-container *ngTemplateOutlet="conversationParticipants"></ng-container>
-    </a>     
-    <!-- <a 
-        (click)="settingsClicked()"
-        class="name">
-      {{conversation.name}}
-    </a> -->
-  </div>  
+        <ng-container *ngTemplateOutlet="conversationParticipants"></ng-container>
+      </a>
+    } @else {
+      <!-- <app-conversation-participants
+      [conversationParticipants]="conversation.recentConversationParticipants"
+      [count]="conversation.conversationParticipantCount">
+    </app-conversation-participants>      -->
+    <app-conversation-list-participants
+      [conversation]="conversation"
+      [hideLastConversationItemInfo]="true"
+      [size]="24">
+    </app-conversation-list-participants>
+  }
+  <!-- <a
+  (click)="settingsClicked()"
+  class="name">
+  {{conversation.name}}
+</a> -->
+</div>
 </ng-template>
 
 <ng-template #actionsTemplate>
-  <div class="actions">      
-    <fs-filter
-      *ngIf="hasAdminRole"
-      [config]="filterConf">
-    </fs-filter>
-    <button
-        *ngIf="hasAdminRole"
+  <div class="actions">
+    @if (hasAdminRole) {
+      <fs-filter
+        [config]="filterConf">
+      </fs-filter>
+    }
+    @if (hasAdminRole) {
+      <button
         type="button"
         tabindex="-1"
         (click)="settingsClicked()"
         mat-icon-button>
-      <mat-icon>settings</mat-icon>
-    </button> 
-    <ng-container *ngIf="conversationActions.length">
+        <mat-icon>settings</mat-icon>
+      </button>
+    }
+    @if (conversationActions.length) {
       <fs-menu>
-        <ng-container *ngFor="let action of conversationActions">
-          <ng-template            
-              fs-menu-item
-              (click)="actionClick(action)">
+        @for (action of conversationActions; track action) {
+          <ng-template
+            fs-menu-item
+            (click)="actionClick(action)">
             {{action.label}}
           </ng-template>
-        </ng-container>
+        }
       </fs-menu>
-    </ng-container> 
+    }
   </div>
 </ng-template>
 
 <ng-template #conversationParticipants>
   <!-- <app-conversation-participants
-    [conversationParticipants]="conversation.recentConversationParticipants"
-    [count]="conversation.conversationParticipantCount">
-  </app-conversation-participants>      -->
+  [conversationParticipants]="conversation.recentConversationParticipants"
+  [count]="conversation.conversationParticipantCount">
+</app-conversation-participants>      -->
 
-  <app-conversation-list-participants
-    [conversation]="conversation"
-    [hideLastConversationItemInfo]="true"
-    [size]="24">
-  </app-conversation-list-participants>
+<app-conversation-list-participants
+  [conversation]="conversation"
+  [hideLastConversationItemInfo]="true"
+  [size]="24">
+</app-conversation-list-participants>
 </ng-template>

@@ -1,19 +1,19 @@
 <div class="container">
-  <fs-conversations 
-      [account]="account"
-      [config]="conversationConfig">
+  <fs-conversations
+    [account]="account"
+    [config]="conversationConfig">
     <ng-template fsConversationsConversation let-conversation="conversation" let-template="template">
-      <ng-container 
-          [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ conversation: conversation }">
+      <ng-container
+        [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ conversation: conversation }">
       </ng-container>
     </ng-template>
     <ng-template fsConversationsConversationName let-conversation="conversation" let-template="template">
-      <ng-container 
-          [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ conversation: conversation }">
+      <ng-container
+        [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ conversation: conversation }">
       </ng-container>
-      <ng-container *ngIf="conversation.flag">
+      @if (conversation.flag) {
         Flag
-      </ng-container>
+      }
     </ng-template>
   </fs-conversations>
 </div>

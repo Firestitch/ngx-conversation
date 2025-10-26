@@ -2,12 +2,12 @@
   <fs-dialog>
     <div mat-dialog-title>Settings</div>
     <mat-dialog-content *fsSkeletonForm="conversation">
-      <ng-container *ngIf="hasAdminRole">
+      @if (hasAdminRole) {
         <mat-tab-group fsTabs [(selected)]="tab">
           <mat-tab label="General" name="settings">
             <ng-template matTabContent>
-              <ng-container *ngIf="!conversationService.conversationSettingTemplate">
-                <ng-container *ngIf="conversationService.conversationConfig.conversationSettings.name.show">
+              @if (!conversationService.conversationSettingTemplate) {
+                @if (conversationService.conversationConfig.conversationSettings.name.show) {
                   <mat-form-field class="full-width">
                     <mat-label>Name</mat-label>
                     <input
@@ -15,27 +15,28 @@
                       [required]="conversationService.conversationConfig.conversationSettings.name.required"
                       [(ngModel)]="conversation.name"
                       name="name">
-                  </mat-form-field> 
-                </ng-container>
+                  </mat-form-field>
+                }
                 <mat-form-field class="full-width">
                   <mat-label>Status</mat-label>
                   <mat-select
-                      [(ngModel)]="conversation.state"
-                      name="conversation.state">
-                    <mat-option
-                        *ngFor="let item of ConversationStates"
+                    [(ngModel)]="conversation.state"
+                    name="conversation.state">
+                    @for (item of ConversationStates; track item) {
+                      <mat-option
                         [value]="item.value">
-                      {{ item.name }}
-                    </mat-option>
+                        {{ item.name }}
+                      </mat-option>
+                    }
                   </mat-select>
-                </mat-form-field>  
-              </ng-container>
-              <ng-container *ngIf="conversationService.conversationSettingTemplate">
-                <ng-container 
+                </mat-form-field>
+              }
+              @if (conversationService.conversationSettingTemplate) {
+                <ng-container
                   [ngTemplateOutlet]="conversationService.conversationSettingTemplate"
                   [ngTemplateOutletContext]="{ conversation: conversation }">
                 </ng-container>
-              </ng-container>
+              }
             </ng-template>
           </mat-tab>
           <mat-tab label="Participants" name="participants">
@@ -47,54 +48,55 @@
             </ng-template>
           </mat-tab>
         </mat-tab-group>
-      </ng-container>
+      }
     </mat-dialog-content>
     <mat-dialog-actions>
-      <ng-container [ngSwitch]="tab">
-        <ng-container *ngSwitchCase="'settings'">
-          <ng-container *ngIf="hasAdminRole">
+      @switch (tab) {
+        @case ('settings') {
+          @if (hasAdminRole) {
             <button
-                mat-button
-                color="primary">
+              mat-button
+              color="primary">
               Save
             </button>
-          </ng-container>
-          <ng-container *ngIf="!hasAdminRole">
+          }
+          @if (!hasAdminRole) {
             <button
-                mat-button
-                type="button"
-                color="primary"
-                mat-dialog-close>
-              Done
-            </button>
-          </ng-container>
-          <button 
-              *ngIf="joined && showLeaveConverstation"
-              mat-button
-              (click)="leave()"
-              color="warn" 
-              type="button">
-            Leave Conversation
-          </button>
-          <ng-container *ngIf="hasAdminRole">
-            <button
-                mat-button
-                type="button"
-                mat-dialog-close>
-              Cancel
-            </button>
-          </ng-container>
-        </ng-container>
-        <ng-container *ngSwitchCase="'participants'">
-          <button
               mat-button
               type="button"
               color="primary"
               mat-dialog-close>
+              Done
+            </button>
+          }
+          @if (joined && showLeaveConverstation) {
+            <button
+              mat-button
+              (click)="leave()"
+              color="warn"
+              type="button">
+              Leave Conversation
+            </button>
+          }
+          @if (hasAdminRole) {
+            <button
+              mat-button
+              type="button"
+              mat-dialog-close>
+              Cancel
+            </button>
+          }
+        }
+        @case ('participants') {
+          <button
+            mat-button
+            type="button"
+            color="primary"
+            mat-dialog-close>
             Done
           </button>
-        </ng-container>
-      </ng-container>
+        }
+      }
     </mat-dialog-actions>
   </fs-dialog>
 </form>

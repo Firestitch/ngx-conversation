@@ -1,9 +1,9 @@
-<div 
-    class="container-pane" 
-    [ngClass]="{ 'conversation-open': !!conversation, mobile: mobile }">
-  <ng-container *ngIf="conversationService.inited">
+<div
+  class="container-pane"
+  [ngClass]="{ 'conversation-open': !!conversation, mobile: mobile }">
+  @if (conversationService.inited) {
     <div class="conversations-pane">
-      <app-conversations-pane 
+      <app-conversations-pane
         [account]="account"
         [conversationsConversationTemplate]="conversationsConversationTemplate"
         [conversationsConversationNameTemplate]="conversationsConversationNameTemplate"
@@ -13,7 +13,7 @@
       </app-conversations-pane>
     </div>
     <div class="conversation-pane">
-      <ng-container *ngIf="conversation">
+      @if (conversation) {
         <app-conversation-pane
           [account]="account"
           [conversation]="conversation"
@@ -22,7 +22,7 @@
           (conversationOpened)="conversationOpened.emit($event)"
           (conversationChange)="conversationChange()">
         </app-conversation-pane>
-      </ng-container>
+      }
     </div>
-  </ng-container>
+  }
 </div>
