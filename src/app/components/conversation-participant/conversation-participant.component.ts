@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-  Optional,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 
 import { ConversationParticipantType } from '../../enums';
 import { ConversationService } from '../../services';
@@ -21,6 +15,8 @@ import { MatTooltip } from '@angular/material/tooltip';
     imports: [FsBadgeModule, MatTooltip],
 })
 export class ConversationParticipantComponent implements OnInit {
+  private _conversationService = inject(ConversationService, { optional: true });
+
 
   @Input() public conversationParticipant;
   @Input() public showName = false;
@@ -37,10 +33,6 @@ export class ConversationParticipantComponent implements OnInit {
   public get conversationService(): ConversationService {
     return this._conversationService || this.service;
   }
-
-  constructor(
-    @Optional() private _conversationService: ConversationService,
-  ) { }
 
   public ngOnInit(): void {
     if (this.conversationParticipant?.type === ConversationParticipantType.Account) {

@@ -1,4 +1,4 @@
-import { Directive, ElementRef, AfterViewInit, Input } from '@angular/core';
+import { Directive, ElementRef, AfterViewInit, Input, inject } from '@angular/core';
 
 
 @Directive({
@@ -6,12 +6,10 @@ import { Directive, ElementRef, AfterViewInit, Input } from '@angular/core';
     standalone: true,
 })
 export class ScrollIntoViewDirective implements AfterViewInit {
+  private _el = inject(ElementRef);
+
 
   @Input() public autoFocus = true;
-
-  constructor(
-    private _el: ElementRef,
-  ) {}
 
   public ngAfterViewInit(): void {
     setTimeout(() => {

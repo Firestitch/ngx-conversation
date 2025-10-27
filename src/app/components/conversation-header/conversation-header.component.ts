@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 
@@ -46,6 +37,9 @@ import { FsMenuModule } from '@firestitch/menu';
     ],
 })
 export class ConversationHeaderComponent implements OnDestroy, OnInit {
+  private _dialog = inject(MatDialog);
+  private _cdRef = inject(ChangeDetectorRef);
+
 
   @Input() public conversation: Conversation;
   @Input() public conversationService: ConversationService;
@@ -61,11 +55,6 @@ export class ConversationHeaderComponent implements OnDestroy, OnInit {
   public conversationActions = [];
 
   private _destroy$ = new Subject();
-
-  constructor(
-    private _dialog: MatDialog,
-    private _cdRef: ChangeDetectorRef,
-  ) { }
 
   public ngOnInit(): void {
     this.initConversationActions();

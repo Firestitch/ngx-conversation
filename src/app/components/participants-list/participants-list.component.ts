@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 
@@ -37,6 +30,10 @@ import { FsBadgeModule } from '@firestitch/badge';
     ],
 })
 export class ParticipantsListComponent implements OnInit, OnDestroy {
+  private _dialog = inject(MatDialog);
+  private _prompt = inject(FsPrompt);
+  private _message = inject(FsMessage);
+
 
   @Input() public conversation: Conversation = null;
   @Input() public conversationService: ConversationService;
@@ -49,12 +46,6 @@ export class ParticipantsListComponent implements OnInit, OnDestroy {
   private _list: FsListComponent = null;
 
   private _destroy$ = new Subject<void>();
-
-  constructor(
-    private _dialog: MatDialog,
-    private _prompt: FsPrompt,
-    private _message: FsMessage,
-  ) { }
 
   public reload(): void {
     this._list.reload();

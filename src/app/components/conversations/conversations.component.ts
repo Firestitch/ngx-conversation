@@ -1,17 +1,4 @@
-import {
-  AfterContentInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ContentChild,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
+import { AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
 
 import { getCurrentDevice } from '@firestitch/device';
 import { Observable, Subject } from 'rxjs';
@@ -41,6 +28,9 @@ import { ConversationPaneComponent as ConversationPaneComponent_1 } from '../con
     ],
 })
 export class FsConversationsComponent implements OnInit, OnDestroy, AfterContentInit, OnInit {
+  private _conversationService = inject(ConversationService);
+  private _cdRef = inject(ChangeDetectorRef);
+
 
   @ContentChild(ConversationHeaderDirective, { read: TemplateRef })
   public conversationHeadingTemplate: TemplateRef<any>;
@@ -69,11 +59,6 @@ export class FsConversationsComponent implements OnInit, OnDestroy, AfterContent
   public mobile = false;
 
   private _destroy$ = new Subject<void>();
-
-  constructor(
-    private _conversationService: ConversationService,
-    private _cdRef: ChangeDetectorRef,
-  ) {}
 
   public get conversationConfig(): ConversationConfig {
     return this._conversationService.conversationConfig;

@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy, ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 
@@ -59,6 +51,10 @@ import { ConversationReadParticipantsPopoverComponent } from '../conversation-re
     ],
 })
 export class ConversationItemsComponent implements OnInit, OnDestroy {
+  private _cdRef = inject(ChangeDetectorRef);
+  private _prompt = inject(FsPrompt);
+  private _dialog = inject(MatDialog);
+
 
   @Input() public conversation: Conversation;
   @Input() public account: Account;
@@ -83,12 +79,6 @@ export class ConversationItemsComponent implements OnInit, OnDestroy {
   })[] = [];
 
   private _destroy$ = new Subject();
-
-  constructor(
-    private _cdRef: ChangeDetectorRef,
-    private _prompt: FsPrompt,
-    private _dialog: MatDialog,
-  ) { }
 
   public ngOnInit(): void {
     this.canShowReadParticipants = this.conversationService.conversationConfig.readConversation.show();

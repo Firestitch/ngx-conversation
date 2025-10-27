@@ -1,58 +1,45 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 
-import { MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatButton } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
+import { FsDialogModule } from '@firestitch/dialog';
 import { ItemType } from '@firestitch/filter';
-import { FsListConfig, FsListComponent, FsListColumnDirective, FsListCellDirective } from '@firestitch/list';
+import { FsFormModule } from '@firestitch/form';
+import { FsListCellDirective, FsListColumnDirective, FsListComponent, FsListConfig } from '@firestitch/list';
 
 import { map } from 'rxjs/operators';
 
 import { ConversationService } from '../../services';
-import { Account, Conversation, ConversationItem } from '../../types';
-import { FsDialogModule } from '@firestitch/dialog';
-import { CdkScrollable } from '@angular/cdk/scrolling';
 import { ConversationParticipantComponent } from '../conversation-participant/conversation-participant.component';
-import { MatButton } from '@angular/material/button';
-import { FsFormModule } from '@firestitch/form';
 
 
 @Component({
-    templateUrl: './conversation-read-participants-dialog.component.html',
-    styleUrls: ['./conversation-read-participants-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        FsDialogModule,
-        MatDialogTitle,
-        CdkScrollable,
-        MatDialogContent,
-        FsListComponent,
-        FsListColumnDirective,
-        FsListCellDirective,
-        ConversationParticipantComponent,
-        MatDialogActions,
-        MatButton,
-        FsFormModule,
-        MatDialogClose,
-    ],
+  templateUrl: './conversation-read-participants-dialog.component.html',
+  styleUrls: ['./conversation-read-participants-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    FsDialogModule,
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    FsListComponent,
+    FsListColumnDirective,
+    FsListCellDirective,
+    ConversationParticipantComponent,
+    MatDialogActions,
+    MatButton,
+    FsFormModule,
+    MatDialogClose,
+  ],
 })
 export class ConversationReadParticipantsDialogComponent implements OnInit {
+  private _data = inject(MAT_DIALOG_DATA);
+
 
   public listConfig: FsListConfig;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private _data: {
-      conversation: Conversation;
-      conversationItem: ConversationItem;
-      conversationService: ConversationService;
-      account: Account;
-    },
-  ) { }
 
   public get conversationService(): ConversationService {
     return this._data.conversationService;
@@ -87,7 +74,7 @@ export class ConversationReadParticipantsDialogComponent implements OnInit {
         return this._data.conversationService
           .conversationConfig.conversationParticipantsGet(conversation, query)
           .pipe(
-            map((response) => ({
+            map((response: any) => ({
               data: response.conversationParticipants,
               paging: response.paging,
             })),

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
 
 import { FsConversationsComponent } from '@firestitch/conversation';
 import { FsWebSocket } from '@firestitch/web-socket';
@@ -28,6 +28,9 @@ import { ConversationsConversationNameDirective } from '../../../../src/app/dire
     ],
 })
 export class ConversationsComponent {
+  private _conversationsService = inject(ConversationsApiService);
+  private _websocketService = inject(FsWebSocket);
+
 
   @ViewChild(FsConversationsComponent)
   public conversations: FsConversationsComponent;
@@ -36,10 +39,7 @@ export class ConversationsComponent {
 
   public conversationConfig: ConversationConfig;
 
-  constructor(
-    private _conversationsService: ConversationsApiService,
-    private _websocketService: FsWebSocket,
-  ) {
+  constructor() {
     this.conversationConfig = {
       ...this._conversationsService.conversationConfig,
       tabs: false,

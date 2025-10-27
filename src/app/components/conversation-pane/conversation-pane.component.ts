@@ -1,14 +1,4 @@
-import {
-  ChangeDetectionStrategy, ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy, OnInit, Output,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatInput } from '@angular/material/input';
@@ -67,6 +57,11 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     ],
 })
 export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
+  private _cdRef = inject(ChangeDetectorRef);
+  private _message = inject(FsMessage);
+  private _conversationService = inject(ConversationService);
+  private _dialog = inject(MatDialog);
+
 
   @ViewChild('messageInput', { read: MatInput })
   public messageInput: MatInput;
@@ -104,13 +99,6 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
   public typing = { state: 'none', name: '', accounts: [] };
 
   private _destroy$ = new Subject();
-
-  constructor(
-    private _cdRef: ChangeDetectorRef,
-    private _message: FsMessage,
-    private _conversationService: ConversationService,
-    private _dialog: MatDialog,
-  ) { }
 
   public ngOnInit(): void {
     this.mobile = currentDeviceMobile();

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FsExampleComponent } from '@firestitch/example';
 import { FsMessage } from '@firestitch/message';
 
@@ -8,10 +8,9 @@ import { FsMessage } from '@firestitch/message';
   styleUrls: ['kitchen-sink.component.scss']
 })
 export class KitchenSinkComponent {
+  private exampleComponent = inject(FsExampleComponent);
+  private message = inject(FsMessage);
+
 
   public config = {};
-
-  constructor(private exampleComponent: FsExampleComponent,
-              private message: FsMessage) {
-  }
 }

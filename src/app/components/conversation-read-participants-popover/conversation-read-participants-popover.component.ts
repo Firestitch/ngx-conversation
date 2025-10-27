@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { FsPopoverRef } from '@firestitch/popover';
 
@@ -26,6 +19,8 @@ import { ConversationParticipantComponent } from '../conversation-participant/co
     imports: [ConversationParticipantComponent],
 })
 export class ConversationReadParticipantsPopoverComponent implements OnInit, OnDestroy {
+  private _cdRef = inject(ChangeDetectorRef);
+
 
   @Input() public conversation: Conversation;
   @Input() public conversationItem: ConversationItem;
@@ -37,10 +32,6 @@ export class ConversationReadParticipantsPopoverComponent implements OnInit, OnD
   public readCount;
 
   private _destroy$ = new Subject();
-
-  constructor(
-    private _cdRef: ChangeDetectorRef,
-  ) {}
 
   public ngOnInit(): void {
     forkJoin({

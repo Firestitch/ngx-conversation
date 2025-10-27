@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -7,11 +7,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   templateUrl: './object-attach.component.html',
 })
 export class ObjectAttachComponent {
+  data = inject(MAT_DIALOG_DATA);
+  private _dialogRef = inject<MatDialogRef<ObjectAttachComponent>>(MatDialogRef);
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private _dialogRef: MatDialogRef<ObjectAttachComponent>,
-  ) { }
 
   public objectSelected(object): void {
     this._dialogRef.close(object);

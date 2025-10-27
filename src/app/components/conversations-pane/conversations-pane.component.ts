@@ -1,16 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 
@@ -55,6 +43,12 @@ import { ConversationsListParticipantsComponent } from '../conversation-list-par
     ],
 })
 export class ConversationsPaneComponent implements OnInit, OnDestroy {
+  private _dialog = inject(MatDialog);
+  private _message = inject(FsMessage);
+  private _conversationService = inject(ConversationService);
+  private _cdRef = inject(ChangeDetectorRef);
+  private _el = inject(ElementRef);
+
 
   @Input() public conversationHeadingTemplate: TemplateRef<any>;
   @Input() public conversationSettingTemplate: TemplateRef<any>;
@@ -83,14 +77,6 @@ export class ConversationsPaneComponent implements OnInit, OnDestroy {
 
   private _destroy$ = new Subject<void>();
   private _converstationsReloadInterval;
-
-  constructor(
-    private _dialog: MatDialog,
-    private _message: FsMessage,
-    private _conversationService: ConversationService,
-    private _cdRef: ChangeDetectorRef,
-    private _el: ElementRef,
-  ) {}
 
   public get conversationConfig(): ConversationConfig {
     return this._conversationService.conversationConfig;

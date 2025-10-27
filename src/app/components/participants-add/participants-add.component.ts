@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 
@@ -36,22 +36,16 @@ import { MatButton } from '@angular/material/button';
     ],
 })
 export class ParticipantsAddComponent implements OnInit, OnDestroy {
+  private _data = inject(MAT_DIALOG_DATA);
+  private _dialogRef = inject<MatDialogRef<ParticipantsAddComponent>>(MatDialogRef);
+  private _message = inject(FsMessage);
+
 
   public accounts: Account[] = [];
   public conversation: Conversation;
 
   private _destroy$ = new Subject<void>();
   private _conversationService: ConversationService;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private _data: {
-      conversationParticipants: ConversationParticipant[];
-      conversation: Conversation;
-      conversationService: ConversationService,
-    },
-    private _dialogRef: MatDialogRef<ParticipantsAddComponent>,
-    private _message: FsMessage,
-  ) { }
 
   public ngOnInit(): void {
     this.conversation = this._data.conversation;

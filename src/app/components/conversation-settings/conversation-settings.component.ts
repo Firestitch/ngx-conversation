@@ -1,7 +1,4 @@
-import {
-  Component, OnInit, OnDestroy,
-  ChangeDetectionStrategy, ChangeDetectorRef, Inject,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 
@@ -62,6 +59,12 @@ import { MatButton } from '@angular/material/button';
     ],
 })
 export class ConversationSettingsComponent implements OnInit, OnDestroy {
+  private _data = inject(MAT_DIALOG_DATA);
+  private _dialogRef = inject<MatDialogRef<ConversationSettingsComponent>>(MatDialogRef);
+  private _dialog = inject(MatDialog);
+  private _cdRef = inject(ChangeDetectorRef);
+  private _message = inject(FsMessage);
+
 
   public conversation: Conversation = null;
   public ConversationStates = ConversationStates;
@@ -72,20 +75,6 @@ export class ConversationSettingsComponent implements OnInit, OnDestroy {
 
   private _conversationService: ConversationService;
   private _destroy$ = new Subject();
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private _data: {
-      conversationService: ConversationService,
-      conversation: Conversation,
-      tab: string,
-      joined: boolean,
-      account: Account,
-    },
-    private _dialogRef: MatDialogRef<ConversationSettingsComponent>,
-    private _dialog: MatDialog,
-    private _cdRef: ChangeDetectorRef,
-    private _message: FsMessage,
-  ) {}
 
   public get conversationService(): ConversationService {
     return this._conversationService;
