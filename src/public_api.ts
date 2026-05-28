@@ -1,4 +1,5 @@
 export { FsConversationsComponent } from './app/components/conversations';
+export { FsConversationModule } from './app/fs-conversation.module';
 export * from './app/consts';
 export {
   ConversationHeaderDirective, ConversationSettingsDirective,

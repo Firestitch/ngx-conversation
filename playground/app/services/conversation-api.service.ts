@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { FsApi } from '@firestitch/api';
 import { ItemType } from '@firestitch/filter';
 import { FsGalleryItem } from '@firestitch/gallery';
-import { FsWebSocket } from '@firestitch/web-socket';
 
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -20,9 +19,6 @@ import {
   providedIn: 'root',
 })
 export class ConversationsApiService {
-  private _api = inject(FsApi);
-  private _websocketService = inject(FsWebSocket);
-
 
   public conversationConfig: ConversationConfig = {
     conversationsGet: (query?: any) => {
@@ -151,6 +147,7 @@ export class ConversationsApiService {
 
   //private _url = 'https://cure.firestitch.dev/api/';
   private _url = 'http://cure.local.firestitch.com/api/';
+  private _api = inject(FsApi);
 
   public save(url, data) {
     return data.id ? this._api.put(`${this._url}${url}/${data.id}`, data) : this._api.post(`${this._url}${url}`, data);
