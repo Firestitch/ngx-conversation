@@ -25,7 +25,7 @@ import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { ConversationHeaderComponent } from '../conversation-header/conversation-header.component';
 import { ConversationItemsComponent as ConversationItemsComponent_1 } from '../conversation-items/conversation-items.component';
-import { MatButton, MatIconButton, MatIconAnchor } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { MatIcon } from '@angular/material/icon';
@@ -53,7 +53,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
         MatIcon,
         MatProgressSpinner,
         FsFileModule,
-        MatIconAnchor,
     ],
 })
 export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {

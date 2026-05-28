@@ -99,7 +99,7 @@
               [multiple]="true"
               imageWidth="1200"
               imageQuality=".8">
-              <a
+              <button
                 mat-icon-button
                 class="button file-button"
                 [disabled]="conversation.state === ConversationState.Closed || submitting"
@@ -108,7 +108,7 @@
                 <mat-icon>
                   attach_file
                 </mat-icon>
-              </a>
+              </button>
             </fs-file>
           </div>
         </div>

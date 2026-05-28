@@ -22,12 +22,13 @@
 
 <ng-template #infoTemplate>
   <div class="info">
-    <a
+    <button
+      type="button"
       class="close"
       mat-icon-button
       (click)="conversationClose.emit()">
       <mat-icon>arrow_back_ios_new</mat-icon>
-    </a>
+    </button>
     @if (hasAdminRole) {
       <a
         class="participants"

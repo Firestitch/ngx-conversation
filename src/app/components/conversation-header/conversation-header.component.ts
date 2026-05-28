@@ -14,7 +14,7 @@ import { ConversationService } from '../../services';
 import { Conversation, ConversationAction } from '../../types';
 import { ParticipantsAddComponent } from '../participants-add';
 import { NgTemplateOutlet } from '@angular/common';
-import { MatIconAnchor, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { ConversationsListParticipantsComponent } from '../conversation-list-participants/conversation-list-participants.component';
 import { FsMenuModule } from '@firestitch/menu';
@@ -28,7 +28,6 @@ import { FsMenuModule } from '@firestitch/menu';
     standalone: true,
     imports: [
         NgTemplateOutlet,
-        MatIconAnchor,
         MatIcon,
         ConversationsListParticipantsComponent,
         FilterComponent,
