@@ -11,7 +11,11 @@ export class ConversationNamePipe implements PipeTransform {
     if(conversation.name) {
       return conversation.name;
     }
-    
+
+    if(conversation.title) {
+      return conversation.title;
+    }
+
     const names = conversation.recentConversationParticipants
       .slice(0,3)      
       .map((recentConversationParticipant) => {

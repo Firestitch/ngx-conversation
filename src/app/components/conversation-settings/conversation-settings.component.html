@@ -13,6 +13,7 @@
                     <input
                       matInput
                       [required]="conversationService.conversationConfig.conversationSettings.name.required"
+                      [placeholder]="conversation.title"
                       [(ngModel)]="conversation.name"
                       name="name">
                   </mat-form-field>

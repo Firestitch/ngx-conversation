@@ -15,6 +15,7 @@ export interface Conversation {
   lastConversationItem?: ConversationItem;
   lastConversationItemId?: number;
   name?: string;
+  title?: string;
   state?: ConversationState;
   accountConversationRoles?: ConversationRole[];
   unread?: number;
