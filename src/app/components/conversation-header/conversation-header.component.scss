@@ -14,20 +14,28 @@
     }
 
     .participants {
-      margin-right: 5px;
+      display: flex;
+      align-items: center;
 
       app-conversation-participants {
         display: flex;
       }
     }
 
+    a.participants {
+      cursor: pointer;
+    }
+
     .name {
-      margin-left: 8px;
+      margin-left: 10px;
       font-size: 110%;
-      color: inherit;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    a.name {
+      cursor: pointer;
     }
   }
 

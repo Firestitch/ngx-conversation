@@ -339,7 +339,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
     this.conversationService.sendTypingStartNotice(this.conversation.id, this.account.id);
   }
 
-  public openSettings(options: { tab?: string } = { tab: 'settings' }): void {
+  public openSettings(options: { tab?: string } = { tab: 'participants' }): void {
     this._dialog.open(ConversationSettingsComponent, {
       autoFocus: false,
       data: {
@@ -347,7 +347,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
         conversationService: this.conversationService,
         joined: this.joined,
         account: this.account,
-        tab: options?.tab || 'settings',
+        tab: options?.tab || 'participants',
       },
     })
       .afterClosed()

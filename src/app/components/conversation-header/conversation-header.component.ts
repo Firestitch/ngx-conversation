@@ -16,7 +16,8 @@ import { ParticipantsAddComponent } from '../participants-add';
 import { NgTemplateOutlet } from '@angular/common';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { ConversationsListParticipantsComponent } from '../conversation-list-participants/conversation-list-participants.component';
+import { ConversationParticipantsComponent } from '../conversation-participants/conversation-participants.component';
+import { ConversationNamePipe } from '../../pipes/conversation-name.pipe';
 import { FsMenuModule } from '@firestitch/menu';
 
 
@@ -29,7 +30,8 @@ import { FsMenuModule } from '@firestitch/menu';
     imports: [
         NgTemplateOutlet,
         MatIcon,
-        ConversationsListParticipantsComponent,
+        ConversationParticipantsComponent,
+        ConversationNamePipe,
         FilterComponent,
         MatIconButton,
         FsMenuModule,

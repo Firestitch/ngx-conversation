@@ -4,6 +4,14 @@
     <mat-dialog-content *fsSkeletonForm="conversation">
       @if (hasAdminRole) {
         <mat-tab-group fsTabs [(selected)]="tab">
+          <mat-tab label="Participants" name="participants">
+            <ng-template matTabContent>
+              <app-participants-list
+                [conversationService]="conversationService"
+                [conversation]="conversation">
+              </app-participants-list>
+            </ng-template>
+          </mat-tab>
           <mat-tab label="General" name="settings">
             <ng-template matTabContent>
               @if (!conversationService.conversationSettingTemplate) {
@@ -38,14 +46,6 @@
                   [ngTemplateOutletContext]="{ conversation: conversation }">
                 </ng-container>
               }
-            </ng-template>
-          </mat-tab>
-          <mat-tab label="Participants" name="participants">
-            <ng-template matTabContent>
-              <app-participants-list
-                [conversationService]="conversationService"
-                [conversation]="conversation">
-              </app-participants-list>
             </ng-template>
           </mat-tab>
         </mat-tab-group>

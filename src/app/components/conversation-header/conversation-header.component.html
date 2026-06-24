@@ -29,29 +29,35 @@
       (click)="conversationClose.emit()">
       <mat-icon>arrow_back_ios_new</mat-icon>
     </button>
+
     @if (hasAdminRole) {
       <a
         class="participants"
         (click)="settingsClicked('participants')">
-        <ng-container *ngTemplateOutlet="conversationParticipants"></ng-container>
+        <ng-container *ngTemplateOutlet="participants"></ng-container>
+      </a>
+      <a
+        class="name"
+        (click)="settingsClicked('participants')">
+        {{ conversation | conversationName }}
       </a>
     } @else {
-      <!-- <app-conversation-participants
-      [conversationParticipants]="conversation.recentConversationParticipants"
-      [count]="conversation.conversationParticipantCount">
-    </app-conversation-participants>      -->
-    <app-conversation-list-participants
-      [conversation]="conversation"
-      [hideLastConversationItemInfo]="true"
-      [size]="24">
-    </app-conversation-list-participants>
-  }
-  <!-- <a
-  (click)="settingsClicked()"
-  class="name">
-  {{conversation.name}}
-</a> -->
-</div>
+      <span class="participants">
+        <ng-container *ngTemplateOutlet="participants"></ng-container>
+      </span>
+      <span class="name">
+        {{ conversation | conversationName }}
+      </span>
+    }
+  </div>
+</ng-template>
+
+<ng-template #participants>
+  <app-conversation-participants
+    [conversationParticipants]="conversation.recentConversationParticipants"
+    [count]="conversation.conversationParticipantCount"
+    [size]="24">
+  </app-conversation-participants>
 </ng-template>
 
 <ng-template #actionsTemplate>
@@ -82,17 +88,4 @@
       </fs-menu>
     }
   </div>
-</ng-template>
-
-<ng-template #conversationParticipants>
-  <!-- <app-conversation-participants
-  [conversationParticipants]="conversation.recentConversationParticipants"
-  [count]="conversation.conversationParticipantCount">
-</app-conversation-participants>      -->
-
-<app-conversation-list-participants
-  [conversation]="conversation"
-  [hideLastConversationItemInfo]="true"
-  [size]="24">
-</app-conversation-list-participants>
 </ng-template>
