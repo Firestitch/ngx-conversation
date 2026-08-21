@@ -100,11 +100,7 @@ export class ParticipantsListComponent implements OnInit, OnDestroy {
                 };
 
                 return this.conversationService.conversationConfig
-                  .conversationParticipantBulk(this.conversation, data)
-                  .pipe(tap(() => {
-                    this.conversationService.sendMessageNotice(this.conversation.id);
-                  }));
-
+                  .conversationParticipantBulk(this.conversation, data);
               }),
               tap(() => {
                 this.reload();
@@ -119,7 +115,6 @@ export class ParticipantsListComponent implements OnInit, OnDestroy {
             return this.conversationService.conversationConfig
               .conversationParticipantDelete(this.conversation, conversationParticipant)
               .pipe(tap(() => {
-                this.conversationService.sendMessageNotice(this.conversation.id);
                 this._list.list.actions.updateDisabledState();
                 this._updateSelectionVisibility(this._list.getData());
               }));

@@ -3,18 +3,12 @@
 :host ::ng-deep {
   fs-list {
     table {
-      table-layout: fixed;
-
       .fs-list-header-container {
         position: sticky;
         top: 0;
         background: #fff;
         z-index: 100;
         padding-bottom: 10px;
-      }
-
-      .row-actions {
-        width: 40px !important;
       }
 
       tr {
@@ -75,7 +69,14 @@
     }
   }
 
+  // Takes every pixel the shrink-to-fit columns beside it do not want. `max-width: 0`
+  // is what stops a long message preview contributing its own width to the table:
+  // without it the column sizes to its content and pushes the row actions off the
+  // pane. The pair replaces `table-layout: fixed`, which broke fs-list's own
+  // `td.actions-col { width: 1% }` by making that 1% literal instead of shrink-to-fit.
   .col-converstaion {
+    width: 100%;
+    max-width: 0;
     overflow: hidden;
 
     .converstaion-row {

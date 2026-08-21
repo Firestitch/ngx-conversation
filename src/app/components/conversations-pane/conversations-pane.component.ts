@@ -8,7 +8,7 @@ import { FsListComponent, FsListConfig, PaginationStrategy, FsListColumnDirectiv
 import { FsMessage } from '@firestitch/message';
 
 import { Subject, of, timer } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 
 import { ConversationRole, ConversationState } from '../../enums';
 import { ConversationService } from '../../services';
@@ -123,7 +123,9 @@ export class ConversationsPaneComponent implements OnInit, OnDestroy {
   public initConverstationsReload(): void {
     timer(this._converstationsReloadInterval, this._converstationsReloadInterval)
       .pipe(
-        filter(() => !this._conversationService.hasWebSocketConnection() && this.listComponent.list.paging.page === 1),
+        withLatestFrom(this._conversationService.connected$),
+        filter(([, connected]: [number, boolean]) => !connected
+          && this.listComponent.list.paging.page === 1),
         takeUntil(this._destroy$),
       )
       .subscribe(() => {
@@ -310,9 +312,17 @@ export class ConversationsPaneComponent implements OnInit, OnDestroy {
       },
     };
 
-    // when notified that user has conversation updates then reload stuff
-    this._conversationService.onUnreadNotice(this.account.id)
+    // Anything that changes what this account's list shows — a message, a
+    // conversation closing, a participant added or removed. The signal does not
+    // say which conversation, so the rows and the counts are both re-read: only
+    // a read can tell this account what it is now allowed to see.
+    this._conversationService.watchAccountConversations(this.account.id)
+      .pipe(
+        takeUntil(this._destroy$),
+      )
       .subscribe(() => {
+        this.loadStats();
+
         if (this.listComponent) {
           this.reload();
         }

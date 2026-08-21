@@ -92,10 +92,6 @@ export class ConversationsApiService {
     accountsGet: (conversation: Conversation, query?: any) => {
       return this.get(`conversations/${conversation.id}/accounts`, query);
     },
-    websocketService: () => {
-      return null;
-
-    },
 
     mapGalleryItem(conversationItem, conversationItemFile): FsGalleryItem {
       return {

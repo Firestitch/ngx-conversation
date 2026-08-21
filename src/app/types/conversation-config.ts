@@ -31,7 +31,6 @@ export interface ConversationConfig {
 
   accountsGet: (conversation: Conversation, query: any, config?: RequestConfig) => Observable<{ accounts: Account[]; paging?: any }>;
 
-  websocketService?: () => any;
   mapAccount?: (account) => Account;
   mapGalleryItem?: (conversationItem: ConversationItem, conversationItemFile: ConversationItemFile) => FsGalleryItem;
   converstationsReloadInterval?: number;

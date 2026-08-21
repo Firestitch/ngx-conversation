@@ -18,7 +18,7 @@ import { HttpContext } from '@angular/common/http';
 import { ConversationStates } from '../../consts';
 import { ConversationItemState, ConversationItemType, ConversationState } from '../../enums';
 import { ConversationService } from '../../services';
-import { Account, Conversation, ConversationConfig, ConversationItem } from '../../types';
+import { Account, Conversation, ConversationConfig, ConversationItem, ConversationTypingNotice } from '../../types';
 import { ConversationItemsComponent } from '../conversation-items';
 import { ConversationSettingsComponent } from '../conversation-settings';
 import { FormsModule } from '@angular/forms';
@@ -98,6 +98,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
   public typing = { state: 'none', name: '', accounts: [] };
 
   private _destroy$ = new Subject();
+  private _conversationLoad$ = new Subject();
 
   public ngOnInit(): void {
     this.mobile = currentDeviceMobile();
@@ -172,7 +173,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
           });
         }),
         finalize(() => {
-          this.conversationItems.autoload = false;
+          this.conversationItems.autoload = true;
         }),
       );
   }
@@ -209,7 +210,12 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
             throwError(false) : of(message)),
         switchMap((message) => this.conversationItemCreate({ message })),
         tap(() => {
-          this.conversationService.sendMessageNotice(this.conversation.id, this.account.id);
+          // The server announces the message itself now, on the write that
+          // stored it — a browser saying "I sent one" was always a claim it
+          // could not back, since the save might not have succeeded. What is
+          // still ours to say is that we stopped typing: nothing else ever
+          // clears the indicator, and one stuck on is worse than none.
+          this.conversationService.typingStop(this.conversation.id);
           this.message = '';
           this.files = [];
           this._cdRef.markForCheck();
@@ -228,6 +234,8 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
   };
 
   public ngOnDestroy(): void {
+    this._conversationLoad$.next(null);
+    this._conversationLoad$.complete();
     this._destroy$.next(null);
     this._destroy$.complete();
   }
@@ -281,7 +289,9 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
         }),
         delay(10),
         tap((response) => {
-          this.joined = response.conversationParticipants.conversationParticipants.length > 0;
+          this.sessionConversationParticipant = response
+            .conversationParticipants.conversationParticipants[0];
+          this.joined = !!this.sessionConversationParticipant;
           this.conversation = response.conversation;
           this.conversationChange.emit();
           this._cdRef.markForCheck();
@@ -291,38 +301,56 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
 
   public loadConversation(conversation: Conversation) {
     this.inited = false;
+
+    // Drop the notice subscriptions from the conversation we are leaving, and
+    // withdraw any typing indicator still standing in it — nothing else would.
+    if (this.conversation?.id) {
+      this.conversationService.typingStop(this.conversation.id);
+    }
+
+    this._conversationLoad$.next(null);
+    this.typing = { state: 'none', name: '', accounts: [] };
     this._cdRef.markForCheck();
 
     this.loadConversation$(conversation)
       .pipe(
         tap(() => {
-          // handle typing updates
+          // Typing reaches every subscriber of the topic including this one —
+          // the others are on other nodes, so the server has no connection to
+          // skip. Dropping our own account is what stops the sender watching
+          // themselves type.
           this.conversationService
-            .onTypingNotice(this.conversation.id)
+            .watchTyping(this.conversation.id)
             .pipe(
-              filter((response) => !!response),
-              takeUntil(this._destroy$),
+              filter((notice: ConversationTypingNotice) => notice.accountId !== this.account.id),
+              takeUntil(this._conversationLoad$),
             )
-            .subscribe((message) => {
-              if (message.data.isTyping) {
-                if (!this.typing.accounts.some((el) => el.id === message.data.accountId)) {
+            .subscribe((notice: ConversationTypingNotice) => {
+              if (notice.typing) {
+                if (!this.typing.accounts.some((el) => el.id === notice.accountId)) {
                   this.typing.accounts
-                    .push({ id: message.data.accountId, name: message.data.accountName });
+                    .push({ id: notice.accountId, name: notice.accountName });
                 }
               } else {
-                this.typing.accounts = this.typing.accounts.filter((el) => el.id !== message.data.accountId);
+                this.typing.accounts = this.typing.accounts
+                  .filter((el) => el.id !== notice.accountId);
               }
+
               this._updateTypingState();
+              this._cdRef.markForCheck();
             });
 
-          // handle new messages
+          // A message arrived, was edited or was removed. The signal says only
+          // that the thread changed, so the items are re-read rather than
+          // merged — which is also what keeps a reader from being handed
+          // content the API would not have served them.
           this.conversationService
-            .onMessageNotice(this.conversation.id)
+            .watchConversationItems(this.conversation.id)
             .pipe(
-              takeUntil(this._destroy$),
+              takeUntil(this._conversationLoad$),
             )
             .subscribe(() => {
-              this.conversationItems.reload();
+              this.conversationItems?.reload();
             });
         }),
         switchMap(() => this.conversationService.openConversation.afterOpen(this.conversation)),
@@ -336,7 +364,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public typingStart() {
-    this.conversationService.sendTypingStartNotice(this.conversation.id, this.account.id);
+    this.conversationService.typingStart(this.conversation.id);
   }
 
   public openSettings(options: { tab?: string } = { tab: 'participants' }): void {

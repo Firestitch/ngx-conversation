@@ -1,81 +1,137 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+
+import { ItemType } from '@firestitch/filter';
+import { FsGalleryItem } from '@firestitch/gallery';
+
 import { of } from 'rxjs';
-import { ConversationRole, ConversationState } from 'src/app/enums';
-import { ConversationConfig, Conversation, ConversationItem, ConversationItemMessage, ConversationParticipant } from 'src/app/types';
-import { conversationData, conversationParticipantData, conversationsData } from '../data';
-import { accountsData } from '../data/accounts-data';
+
+import {
+  Conversation,
+  ConversationConfig,
+  ConversationItem,
+  ConversationItemMessage,
+  ConversationParticipant,
+} from 'src/app/types';
+
+import { ConversationStoreService } from './conversation-store.service';
 
 
+/**
+ * A `ConversationConfig` backed entirely by the in-memory store — no HTTP, no server.
+ * Every entry is a plain function returning an Observable, so the conversation
+ * components cannot tell it apart from the API-backed config.
+ */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConversationsStaticService {
 
+  private _store = inject(ConversationStoreService);
+
   public conversationConfig: ConversationConfig = {
     conversationsGet: (query?: any) => {
-      return of(conversationsData);
+      return this._store.conversationsGet(query);
     },
     conversationsStats: (query?: any) => {
-      return of({});
+      return this._store.conversationsStats(query);
     },
     conversationSave: (conversation: Conversation) => {
-      return of(conversation);
-    },
-    conversationRead: (conversation: Conversation, conversationItemId) => {
-      return of(conversation);
+      return this._store.conversationSave(conversation);
     },
     conversationDelete: (conversation: Conversation) => {
-      return of({
-        ...conversation,
-        state: ConversationState.Deleted,
-      });
+      return this._store.conversationDelete(conversation);
+    },
+    conversationRead: (conversation: Conversation, conversationItem: ConversationItem) => {
+      return this._store.conversationRead(conversation, conversationItem);
     },
     conversationItemsGet: (conversation: Conversation, query?: any) => {
-      let conversationItems = conversationData.conversationItems
-      .filter((conversationItem) => {
-        return conversation.id === conversationItem.conversationId
-      });
-
-      if (query?.maxConversationItemId) {
-        conversationItems = conversationItems
-          .filter((conversationItem) => (conversationItem.id > query.maxConversationItemId));
-      }
-
-      return of({ conversationItems });
+      return this._store.conversationItemsGet(conversation, query);
     },
     conversationItemSave: (conversationItem: ConversationItem | ConversationItemMessage) => {
-      return of(conversationItem);
-    },
-    conversationParticipantAdd: (conversation: Conversation, data) => {
-      return of(null)
+      return this._store.conversationItemSave(conversationItem);
     },
     conversationItemDelete: (conversationItem: ConversationItem | ConversationItemMessage) => {
-      return of(conversationItem);
+      return this._store.conversationItemDelete(conversationItem);
     },
     conversationItemFilePost: (conversationItem: ConversationItem, file: Blob) => {
-      return of(true);
+      return this._store.conversationItemFilePost(conversationItem, file);
     },
-    conversationItemFileDownload: (conversationItem: ConversationItem | ConversationItemMessage, fileId: number) =>  {
-
+    conversationItemFileDownload: (conversationItem: ConversationItem, fileId: number) => {
+      this._store.conversationItemFileDownload(conversationItem, fileId);
     },
     conversationParticipantsGet: (conversation: Conversation, query?: any) => {
-      return of(conversationParticipantData);
+      return this._store.conversationParticipantsGet(conversation, query);
     },
-    conversationParticipantSave: (conversation: Conversation, conversationParticipant: ConversationParticipant) => {
-      return of(conversationParticipant);
+    conversationParticipantSave: (
+      conversation: Conversation,
+      conversationParticipant: ConversationParticipant,
+    ) => {
+      return this._store.conversationParticipantSave(conversation, conversationParticipant);
+    },
+    conversationParticipantAdd: (conversation: Conversation, data: any) => {
+      return this._store.conversationParticipantAdd(conversation, data);
     },
     conversationParticipantSession: (conversation: Conversation) => {
-      return of({});
+      return this._store.conversationParticipantSession(conversation);
     },
-    conversationParticipantDelete: (conversation: Conversation, conversationParticipant: ConversationParticipant) => {
-      return of(conversationParticipant);
+    conversationParticipantDelete: (
+      conversation: Conversation,
+      conversationParticipant: ConversationParticipant,
+    ) => {
+      return this._store.conversationParticipantDelete(conversation, conversationParticipant);
     },
     conversationParticipantBulk: (conversation: Conversation, data: any) => {
-      return of({});
+      return this._store.conversationParticipantBulk(conversation, data);
     },
     accountsGet: (conversation: Conversation, query?: any) => {
-      return of(accountsData)
+      return this._store.accountsGet(conversation, query);
     },
-  }
+
+    mapGalleryItem: (conversationItem, conversationItemFile): FsGalleryItem => {
+      return {
+        name: conversationItemFile.file.filename,
+        preview: conversationItemFile.file.preview?.small,
+        url: conversationItemFile.file.preview?.large,
+        index: conversationItemFile.id,
+        data: conversationItemFile,
+        extension: conversationItemFile.file.extension,
+        guid: String(conversationItemFile.id),
+      };
+    },
+
+    leaveConversation: {
+      show: () => true,
+    },
+
+    readConversation: {
+      show: () => of(true),
+    },
+
+    startConversation: {
+      show: () => of(true),
+      disabled: () => of(false),
+      tooltip: () => of('Start a new conversation'),
+    },
+
+    conversationsFilters: [
+      {
+        type: ItemType.Checkbox,
+        label: 'Checkbox',
+        name: 'checkbox',
+      },
+    ],
+
+    conversationActions: [
+      {
+        label: 'Flag Conversation',
+        click: (conversation: Conversation & { flag?: boolean }) => {
+          conversation.flag = !conversation.flag;
+
+          return of(conversation);
+        },
+        show: () => true,
+      },
+    ],
+  };
 
 }

@@ -9,6 +9,6 @@ export * from './app/enums';
 
 export {
   Conversation, ConversationConfig, ConversationItem,
-  ConversationItemMessage, ConversationParticipant,
+  ConversationItemMessage, ConversationParticipant, ConversationTypingNotice,
 } from './app/types';
 

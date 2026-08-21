@@ -18,6 +18,8 @@ import { FsFileModule } from '@firestitch/file';
 import { FsMessageModule } from '@firestitch/message';
 import { FsGalleryModule } from '@firestitch/gallery';
 import { provideRouter, Routes } from '@angular/router';
+import { FsWebSocket } from '@firestitch/web-socket';
+import { PlaygroundWebSocket } from './app/services';
 import { ExamplesComponent } from './app/components';
 import { FsFilterModule } from '@firestitch/filter';
 import { AppComponent } from './app/app.component';
@@ -45,6 +47,11 @@ bootstrapApplication(AppComponent, {
         },
         provideAnimations(),
         provideRouter(routes),
+        // The demo has no socket server, so it substitutes the transport. Both tokens
+        // resolve to one instance: the components inject FsWebSocket, the store needs
+        // the playground subclass to raise server-side events.
+        PlaygroundWebSocket,
+        { provide: FsWebSocket, useExisting: PlaygroundWebSocket },
     ]
 })
   .catch(err => console.error(err));

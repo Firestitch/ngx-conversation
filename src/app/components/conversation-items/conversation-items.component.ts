@@ -6,7 +6,7 @@ import { FsGalleryConfig, FsGalleryItem, MimeType, ThumbnailScale, FsGalleryModu
 import { FsPrompt } from '@firestitch/prompt';
 
 import { Observable, of, Subject, timer } from 'rxjs';
-import { delay, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 
 import {
   ConversationItemState, ConversationItemType, ConversationRole, ConversationState,
@@ -93,16 +93,20 @@ export class ConversationItemsComponent implements OnInit, OnDestroy {
         this.conversationInitialLoad.emit();
       });
 
+    // The fallback for a build with no socket, or one whose socket cannot
+    // connect. It keeps running while the socket is up rather than being torn
+    // down, so a connection dropping mid-thread costs at most one interval
+    // rather than every message after it.
     timer(0, 5000)
       .pipe(
         filter(() => this.autoload),
+        withLatestFrom(this.conversationService.connected$),
+        filter(([, connected]: [number, boolean]) => !connected),
         takeUntil(this._destroy$),
       )
       .subscribe(() => {
-        if (!this.conversationService.hasWebSocketConnection()) {
-          this.load();
-          this._cdRef.markForCheck();
-        }
+        this.load();
+        this._cdRef.markForCheck();
       });
   }
 
@@ -230,12 +234,7 @@ export class ConversationItemsComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap(() => {
           return this.conversationService
-            .conversationConfig.conversationItemDelete(conversationItem)
-            .pipe(
-              tap(() => {
-                this.conversationService.sendMessageNotice(this.conversation.id, this.account.id);
-              }),
-            );
+            .conversationConfig.conversationItemDelete(conversationItem);
         }),
         takeUntil(this._destroy$),
       )

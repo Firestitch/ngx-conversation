@@ -6,7 +6,9 @@ import { FsConversationsComponent } from '@firestitch/conversation';
 import { of } from 'rxjs';
 
 import { accountData } from 'playground/app/data';
-import { ConversationsApiService } from 'playground/app/services';
+import {
+  ConversationStoreService, ConversationsStaticService, PlaygroundWebSocket,
+} from 'playground/app/services';
 import { ConversationConfig } from 'src/app/types';
 
 import { FsConversationsComponent as FsConversationsComponent_1 } from '../../../../src/app/components/conversations/conversations.component';
@@ -35,26 +37,33 @@ export class ConversationsComponent {
   public account = accountData;
 
   public conversationConfig: ConversationConfig;
-  
-  private _conversationsService = inject(ConversationsApiService);
+
+  // Swap for ConversationsApiService to run the demo against a real backend
+  private _conversationsService = inject(ConversationsStaticService);
+  private _conversationStore = inject(ConversationStoreService);
+  private _webSocket = inject(PlaygroundWebSocket);
 
   constructor() {
+    // Be an admin everywhere so the admin-only actions are reachable in the example
+    this._conversationStore.sessionAdmin = true;
+
+    // Set `debug` to log every socket frame to the console — chatty, because the pane
+    // sends a typing frame per keypress. `disconnect()` drops the components back onto
+    // polling, which is a useful way to compare the two paths.
+    this._webSocket.debug = false;
+
     this.conversationConfig = {
       ...this._conversationsService.conversationConfig,
-      tabs: false,
-      // readConversation: {
-      //   show: () => of(false),
-      // },
       startConversation: {
         ...this._conversationsService.conversationConfig.startConversation,
         afterOpen: (conversation) => {
-          const conversationPane = this.conversations.conversationPane;
-          conversationPane.openSettings();
+          this.conversations.conversationPane.openSettings();
 
           return of(conversation);
         },
       },
-      converstationsReloadInterval: 10000,
+      converstationsReloadInterval: 10,
     };
   }
+
 }
