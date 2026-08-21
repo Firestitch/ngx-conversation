@@ -261,6 +261,13 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
 
   public conversationReload() {
     this.loadConversation$(this.conversation)
+      .pipe(
+        // The thread is re-read as well. Somebody joining or leaving writes a
+        // notice into it, and this reload is what announced that change — but
+        // the conversation is the same one, so the items do not refetch on
+        // their own. They used to only because this method rebuilt them.
+        tap(() => this.conversationItems?.reload()),
+      )
       .subscribe();
   }
 
@@ -283,11 +290,6 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
         }),
     })
       .pipe(
-        tap(() => {
-          this.conversation = null;
-          this._cdRef.markForCheck();
-        }),
-        delay(10),
         tap((response) => {
           this.sessionConversationParticipant = response
             .conversationParticipants.conversationParticipants[0];
@@ -358,8 +360,18 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
           this.inited = true;
         }),
       )
-      .subscribe(() => {
-        this.conversationOpened.emit(this.conversation);
+      .subscribe({
+        next: () => {
+          this.conversationOpened.emit(this.conversation);
+        },
+        error: () => {
+          // A conversation that cannot be read has to say so. Unhandled, this
+          // reached the console as an unhandled error and left the pane holding
+          // the header of the thread being opened with nothing under it, which
+          // reads as a conversation whose replies disappeared.
+          this._message.error('Failed to load the conversation');
+          this._cdRef.markForCheck();
+        },
       });
   }
 

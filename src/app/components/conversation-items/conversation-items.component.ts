@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 
 import { MatDialog } from '@angular/material/dialog';
 
@@ -50,7 +50,7 @@ import { ConversationReadParticipantsPopoverComponent } from '../conversation-re
         AsyncPipe,
     ],
 })
-export class ConversationItemsComponent implements OnInit, OnDestroy {
+export class ConversationItemsComponent implements OnInit, OnChanges, OnDestroy {
   private _cdRef = inject(ChangeDetectorRef);
   private _prompt = inject(FsPrompt);
   private _dialog = inject(MatDialog);
@@ -108,6 +108,31 @@ export class ConversationItemsComponent implements OnInit, OnDestroy {
         this.load();
         this._cdRef.markForCheck();
       });
+  }
+
+  /**
+   * The thread follows whichever conversation it is given.
+   *
+   * Nothing else refetches on a swap: opening another conversation replaces
+   * this input in place, and without this the messages stay on the thread
+   * before it — one conversation's header over another's replies. It used to
+   * work only because the pane blanked its conversation and set it back a tick
+   * later, destroying and rebuilding this component to force the read.
+   *
+   * Keyed on the id rather than the object. The pane replaces the row it was
+   * handed with the fuller conversation the API returns, and that is the same
+   * thread — reloading on it would cost a second read of every thread opened.
+   */
+  public ngOnChanges(changes: SimpleChanges): void {
+    const conversation = changes.conversation;
+
+    if (!conversation || conversation.firstChange) {
+      return;
+    }
+
+    if (conversation.previousValue?.id !== conversation.currentValue?.id) {
+      this.reload();
+    }
   }
 
   public reload(): void {
