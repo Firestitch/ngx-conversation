@@ -3,31 +3,37 @@
   display: block;
 }
 
+// `fs-resize` brings the row itself — the flex container, the panel widths and
+// the draggable seam between them. What is left here is the height, the gap
+// between the two panes and what they do when only one of them holds anything.
 .container-pane {
   height: 100%;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
 
-  &.conversation-open {
-    .conversations-pane {
-      width: 500px;
+  // The seam sits on the panel boundary, so the gap either side of it is this
+  // pane's own: the margin falls before the line, the padding after it. Same
+  // value both ways, or the line reads as a border on one pane rather than a
+  // divider between two. The right side matches so the conversation is inset
+  // evenly, and it is the whole pane's inset — the header, the items and the
+  // message box all sit against it rather than each carrying its own.
+  .conversation-pane {
+    margin-left: 20px;
+    padding: 0 20px;
+
+    // The pane lays its own form out at `height: 100%`, which needs a parent
+    // stretched to the row rather than one sized by its content.
+    app-conversation-pane {
+      display: block;
+      height: 100%;
     }
   }
 
-  .conversations-pane {
-    max-width: 100%;
-    width: 100%;
-    height: 100%;
-    display: block;
-    flex-shrink: 0;
-  }
-
-  .conversation-pane {
-    display: flex;
-    flex: 1;
-    margin-left: 30px;
-    min-width: 0;
+  // With nothing open beside the list there is no seam to drag and nothing to
+  // divide, so the empty pane leaves the row and the list takes the width back.
+  &:not(.conversation-open) {
+    .conversation-pane {
+      display: none;
+    }
   }
 }
 
@@ -67,17 +73,16 @@ mat-tab-group .unread {
   .container-pane {
     .conversation-pane {
       margin: 0;
-    }
 
-    &.conversation-open {
-      .conversations-pane {
+      // Only one of the two panes is on screen at this width, so the seam
+      // between them has nothing left to sit on.
+      ::ng-deep .fs-resize-handle {
         display: none;
       }
     }
 
-    
-    &:not(.conversation-open) {
-      .conversation-pane {
+    &.conversation-open {
+      .conversations-pane {
         display: none;
       }
     }

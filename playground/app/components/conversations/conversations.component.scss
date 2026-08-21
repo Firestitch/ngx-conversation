@@ -10,3 +10,15 @@
   height: 600px;
   display: block;
 }
+
+.simulate {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  .note {
+    margin-left: 10px;
+    font-size: 85%;
+    color: #666;
+  }
+}

@@ -23,6 +23,52 @@ form {
   text-align: center;  
 }
 
+// The typing indicator floats over the bottom of the thread rather than sitting
+// in it: in the flow it pushed the last message up as it appeared and dropped it
+// back as it went, so a conversation being replied to twitched while you read
+// it. Absolute here also means the placeholder row that used to hold the space
+// open is gone.
+.conversation-footer {
+  position: relative;
+
+  .typing {
+    position: absolute;
+    bottom: 100%;
+    left: 4px;
+    display: flex;
+    align-items: center;
+    max-width: calc(100% - 8px);
+    padding: 2px 8px 2px 4px;
+    border-radius: 11px;
+    background: rgb(255 255 255 / 92%);
+    font-size: 75%;
+    color: rgb(90, 90, 90);
+    white-space: nowrap;
+    overflow: hidden;
+
+    // Purely something to read — clicks belong to the messages underneath it
+    pointer-events: none;
+
+    fs-badge.avatar {
+      display: flex;
+      flex: 0 0 auto;
+
+      + .label {
+        margin-left: 5px;
+      }
+
+      + fs-badge.avatar {
+        margin-left: -6px;
+      }
+    }
+
+    .label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
 .message-send-container {
   padding: 8px 0;
   display: flex;

@@ -3,7 +3,6 @@ $messageContainerSideMargin: 34px;
 .items {
   display: flex;
   flex-direction: column-reverse;
-  padding: 0 6px;
 
   &:not(.initialized) {
     visibility: hidden;

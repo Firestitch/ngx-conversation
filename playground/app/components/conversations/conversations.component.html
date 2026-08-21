@@ -1,3 +1,17 @@
+<div class="simulate">
+  <button
+    mat-stroked-button
+    type="button"
+    [disabled]="!conversations?.conversation"
+    (click)="simulatedTypingToggle()">
+    {{ simulatedTyping ? 'Stop Simulated Typing' : 'Simulate Typing' }}
+  </button>
+  @if (simulatedTyping) {
+    <span class="note">
+      {{ simulatedTyping.account.name }} is typing in the open conversation
+    </span>
+  }
+</div>
 <div class="container">
   <fs-conversations
     [account]="account"

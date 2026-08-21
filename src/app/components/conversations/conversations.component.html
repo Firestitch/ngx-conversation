@@ -1,8 +1,15 @@
-<div
+<fs-resize
   class="container-pane"
-  [ngClass]="{ 'conversation-open': !!conversation, mobile: mobile }">
+  [ngClass]="{ 'conversation-open': !!conversation, mobile: mobile }"
+  [disabled]="!conversation"
+  (sizesChange)="conversationsPaneResized($event)">
   @if (conversationService.inited) {
-    <div class="conversations-pane">
+    <fs-resize-panel
+      #conversationsResizePanel
+      class="conversations-pane"
+      label="Resize conversations"
+      [size]="conversation ? conversationsPaneWidth : null"
+      [min]="200">
       <app-conversations-pane
         [account]="account"
         [conversationsConversationTemplate]="conversationsConversationTemplate"
@@ -11,8 +18,10 @@
         (conversationClose)="conversationClose($event)"
         (conversationOpen)="conversationOpen($event)">
       </app-conversations-pane>
-    </div>
-    <div class="conversation-pane">
+    </fs-resize-panel>
+    <fs-resize-panel
+      class="conversation-pane"
+      [min]="300">
       @if (conversation) {
         <app-conversation-pane
           [account]="account"
@@ -23,6 +32,6 @@
           (conversationChange)="conversationChange()">
         </app-conversation-pane>
       }
-    </div>
+    </fs-resize-panel>
   }
-</div>
+</fs-resize>

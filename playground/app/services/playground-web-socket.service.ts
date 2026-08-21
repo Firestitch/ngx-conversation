@@ -239,6 +239,7 @@ export class PlaygroundWebSocket extends FsWebSocket {
       ...(message.data as Record<string, unknown>),
       accountId: account?.id,
       accountName: account?.name,
+      accountAvatar: account?.avatar?.tiny,
     });
   }
 

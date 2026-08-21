@@ -24,27 +24,6 @@
           (conversationInitialLoad)="conversationScrollToBottom()"
           (conversationChange)="conversationReload()">
         </app-conversation-items>
-        @if (typing.state==='single') {
-          <div
-            class="typing"
-            >
-            {{ typing.name }} is typing..
-          </div>
-        }
-        @if (typing.state==='multiple') {
-          <div
-            class="typing"
-            >
-            People are typing..
-          </div>
-        }
-        @if (typing.state==='none') {
-          <div
-            class="typing"
-            >
-            &nbsp;
-          </div>
-        }
       </div>
       @if (inited && !joined) {
         <div class="join-conversation">
@@ -58,73 +37,94 @@
         </div>
       }
     </div>
-    @if (joined) {
-      <div class="message-send-container">
-        <div class="message-actions">
-          <mat-form-field class="form-field-padless">
-            <textarea
-              #messageInput
-              matInput
-              (keydown)="messageKeydown($event)"
-              [fsAutofocus]="!mobile"
-              cdkTextareaAutosize
-              [(ngModel)]="message"
-              [placeholder]="'Type a message'"
-              [disabled]="conversation.state === ConversationState.Closed || submitting"
-              name="message"
-              (keypress)="typingStart()">
-            </textarea>
-          </mat-form-field>
-          <div class="buttons">
-            @if (!submitting) {
-              <button
-                mat-icon-button
-                type="submit"
-                class="button send-button"
-                [disabled]="(!message && !files.length) || conversation.state === ConversationState.Closed"
-                color="primary">
-                <mat-icon>
-                  send
-                </mat-icon>
-              </button>
+    <div class="conversation-footer">
+      @if (typing.state !== 'none') {
+        <div class="typing">
+          @for (typingAccount of typing.accounts; track typingAccount.id) {
+            <fs-badge
+              class="avatar"
+              [size]="20"
+              [color]="'#ccc'"
+              [image]="typingAccount.avatar">
+            </fs-badge>
+          }
+          <span class="label">
+            @if (typing.state === 'single') {
+              {{ typing.name }} is typing...
+            } @else {
+              {{ typing.name }} are typing...
             }
-            @if (submitting) {
-              <div class="spinner">
-                <mat-spinner [diameter]="25"></mat-spinner>
-              </div>
-            }
-            <fs-file
-              [disabled]="conversation.state === ConversationState.Closed"
-              (select)="fileSelect($event)"
-              [multiple]="true"
-              imageWidth="1200"
-              imageQuality=".8">
-              <button
-                mat-icon-button
-                class="button file-button"
-                [disabled]="conversation.state === ConversationState.Closed || submitting"
-                type="button"
-                color="basic">
-                <mat-icon>
-                  attach_file
-                </mat-icon>
-              </button>
-            </fs-file>
-          </div>
+          </span>
         </div>
-        <fs-file-previews
-          [previewWidth]="120"
-          [previewHeight]="120"
-          [files]="files">
-          <ng-template
-            fs-file-preview-action
-            [show]="!submitting"
-            [placement]="'top-right'"
-            (click)="fileRemove($event.file)"
-            [icon]="'close'">
-          </ng-template>
-        </fs-file-previews>
-      </div>
-    }
+      }
+      @if (joined) {
+        <div class="message-send-container">
+          <div class="message-actions">
+            <mat-form-field class="form-field-padless">
+              <textarea
+                #messageInput
+                matInput
+                (keydown)="messageKeydown($event)"
+                [fsAutofocus]="!mobile"
+                cdkTextareaAutosize
+                [(ngModel)]="message"
+                [placeholder]="'Type a message'"
+                [disabled]="conversation.state === ConversationState.Closed || submitting"
+                name="message"
+                (keypress)="typingStart()">
+              </textarea>
+            </mat-form-field>
+            <div class="buttons">
+              @if (!submitting) {
+                <button
+                  mat-icon-button
+                  type="submit"
+                  class="button send-button"
+                  [disabled]="(!message && !files.length) || conversation.state === ConversationState.Closed"
+                  color="primary">
+                  <mat-icon>
+                    send
+                  </mat-icon>
+                </button>
+              }
+              @if (submitting) {
+                <div class="spinner">
+                  <mat-spinner [diameter]="25"></mat-spinner>
+                </div>
+              }
+              <fs-file
+                [disabled]="conversation.state === ConversationState.Closed"
+                (select)="fileSelect($event)"
+                [multiple]="true"
+                imageWidth="1200"
+                imageQuality=".8">
+                <button
+                  mat-icon-button
+                  class="button file-button"
+                  [disabled]="conversation.state === ConversationState.Closed || submitting"
+                  type="button"
+                  color="basic">
+                  <mat-icon>
+                    attach_file
+                  </mat-icon>
+                </button>
+              </fs-file>
+            </div>
+          </div>
+          <fs-file-previews
+            [previewWidth]="120"
+            [previewHeight]="120"
+            [files]="files">
+            <ng-template
+              fs-file-preview-action
+              [show]="!submitting"
+              [placement]="'top-right'"
+              (click)="fileRemove($event.file)"
+              [icon]="'close'">
+            </ng-template>
+          </fs-file-previews>
+        </div>
+      }
+    </div>
   }
 </form>

@@ -1,6 +1,7 @@
 import { AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
 
 import { getCurrentDevice } from '@firestitch/device';
+import { FsResizeComponent, FsResizePanelComponent } from '@firestitch/resize';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 
@@ -23,6 +24,8 @@ import { ConversationPaneComponent as ConversationPaneComponent_1 } from '../con
     standalone: true,
     imports: [
         NgClass,
+        FsResizeComponent,
+        FsResizePanelComponent,
         ConversationsPaneComponent_1,
         ConversationPaneComponent_1,
     ],
@@ -50,6 +53,9 @@ export class FsConversationsComponent implements OnInit, OnDestroy, AfterContent
   @ViewChild(ConversationsPaneComponent)
   public conversationsPane: ConversationsPaneComponent;
 
+  @ViewChild('conversationsResizePanel')
+  public conversationsResizePanel: FsResizePanelComponent;
+
   @Input() public config: ConversationConfig;
   @Input() public account: Account;
 
@@ -57,6 +63,12 @@ export class FsConversationsComponent implements OnInit, OnDestroy, AfterContent
 
   public conversation: Conversation;
   public mobile = false;
+
+  // What the list is given the moment a conversation opens beside it, and
+  // whatever it was last dragged to after that, so reopening does not throw the
+  // width away. It is handed back to the panel as a declared size rather than
+  // kept as an inline one, because closing has to be able to drop it.
+  public conversationsPaneWidth = 500;
 
   private _destroy$ = new Subject<void>();
 
@@ -86,6 +98,10 @@ export class FsConversationsComponent implements OnInit, OnDestroy, AfterContent
     this._destroy$.complete();
   }
 
+  public conversationsPaneResized(sizes: number[]): void {
+    this.conversationsPaneWidth = sizes[0] ?? this.conversationsPaneWidth;
+  }
+
   public conversationChange(): void {
     if(this.conversationsPane) {
       this.conversationsPane.loadStats();
@@ -96,6 +112,11 @@ export class FsConversationsComponent implements OnInit, OnDestroy, AfterContent
 
   public conversationClose(reload = false): void {
     this.conversation = null;
+
+    // A drag leaves the width on the panel itself, where it would outlive the
+    // conversation it was sized against. Resetting hands the panel back to its
+    // declared size — null with nothing open — so the list fills the pane again.
+    this.conversationsResizePanel?.reset();
     this.conversationsPane.deselect();
 
     if (reload) {

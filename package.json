@@ -1,7 +1,7 @@
 {
   "name": "@firestitch/conversation",
   "title": "Conversation",
-  "version": "18.0.20",
+  "version": "18.0.21",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-conversation"
@@ -74,6 +74,7 @@
     "@firestitch/pdf-viewer": "^18.0.6",
     "@firestitch/popover": "^18.0.2",
     "@firestitch/prompt": "^18.0.13",
+    "@firestitch/resize": "^18.0.2",
     "@firestitch/scroll": "^18.0.0",
     "@firestitch/scroll-picker": "^18.0.0",
     "@firestitch/selectbutton": "^18.0.11",

@@ -16,4 +16,13 @@ export interface ConversationTypingNotice {
   accountId: number;
   accountName: string;
   typing: boolean;
+
+  /**
+   * The typing account's avatar, for the indicator to show a face alongside the
+   * name. Carried for the same reason the name is: the indicator is worth
+   * nothing a second later, so there is nothing to re-read it from. Optional —
+   * a deployment that does not stamp it still gets the name, and the indicator
+   * shows a plain circle in place of the face.
+   */
+  accountAvatar?: string;
 }

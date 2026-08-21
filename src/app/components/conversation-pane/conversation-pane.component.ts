@@ -5,6 +5,7 @@ import { MatInput } from '@angular/material/input';
 
 import { list, FsCommonModule } from '@firestitch/common';
 import { currentDeviceMobile } from '@firestitch/device';
+import { FsBadgeModule } from '@firestitch/badge';
 import { FsFile, FsFileModule } from '@firestitch/file';
 import { FsFormDirective, FsFormModule } from '@firestitch/form';
 import { FsMessage } from '@firestitch/message';
@@ -32,6 +33,23 @@ import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 
+/**
+ * Who the pane is currently showing as typing. Local view state built from the
+ * notices as they land, not something the API returns — `state` is only the
+ * three shapes the indicator has, kept off `accounts.length` so the template
+ * does not do the counting.
+ */
+interface ConversationPaneTyping {
+  state: 'none' | 'single' | 'multiple';
+  name: string;
+  accounts: {
+    id: number;
+    name: string;
+    avatar?: string;
+  }[];
+}
+
+
 @Component({
     selector: 'app-conversation-pane',
     templateUrl: './conversation-pane.component.html',
@@ -53,6 +71,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
         MatIcon,
         MatProgressSpinner,
         FsFileModule,
+        FsBadgeModule,
     ],
 })
 export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
@@ -95,7 +114,7 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
   public inited = false;
   public mobile = false;
   public submitting = false;
-  public typing = { state: 'none', name: '', accounts: [] };
+  public typing: ConversationPaneTyping = { state: 'none', name: '', accounts: [] };
 
   private _destroy$ = new Subject();
   private _conversationLoad$ = new Subject();
@@ -262,11 +281,12 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
   public conversationReload() {
     this.loadConversation$(this.conversation)
       .pipe(
-        // The thread is re-read as well. Somebody joining or leaving writes a
-        // notice into it, and this reload is what announced that change — but
-        // the conversation is the same one, so the items do not refetch on
-        // their own. They used to only because this method rebuilt them.
-        tap(() => this.conversationItems?.reload()),
+        // The thread is read forward as well. Somebody joining or leaving
+        // writes a notice into it, and this reload is what announced that
+        // change — but the conversation is the same one, so the items do not
+        // refetch on their own. They used to only because this method rebuilt
+        // them.
+        tap(() => this.conversationItems?.load()),
       )
       .subscribe();
   }
@@ -331,7 +351,11 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
               if (notice.typing) {
                 if (!this.typing.accounts.some((el) => el.id === notice.accountId)) {
                   this.typing.accounts
-                    .push({ id: notice.accountId, name: notice.accountName });
+                    .push({
+                      id: notice.accountId,
+                      name: notice.accountName,
+                      avatar: notice.accountAvatar,
+                    });
                 }
               } else {
                 this.typing.accounts = this.typing.accounts
@@ -342,20 +366,28 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
               this._cdRef.markForCheck();
             });
 
-          // A message arrived, was edited or was removed. The signal says only
-          // that the thread changed, so the items are re-read rather than
-          // merged — which is also what keeps a reader from being handed
-          // content the API would not have served them.
+          // A message arrived, was edited or was removed. Read forward from
+          // what we already hold rather than refetching the thread: the signal
+          // fires once per participant per write, and on a long conversation a
+          // reload costs the whole history for what is almost always one new
+          // message. The read still goes through the endpoint that decides what
+          // this reader may see — only the range narrows.
           this.conversationService
             .watchConversationItems(this.conversation.id)
             .pipe(
               takeUntil(this._conversationLoad$),
             )
             .subscribe(() => {
-              this.conversationItems?.reload();
+              this.conversationItems?.load();
             });
         }),
         switchMap(() => this.conversationService.openConversation.afterOpen(this.conversation)),
+        // Dropped the moment another conversation is opened. _conversationLoad$
+        // already fired above, and without this only the notice subscriptions
+        // honoured it — the load itself ran on. Two quick clicks then race, and
+        // the slower first one lands last and writes its conversation over the
+        // one actually being looked at.
+        takeUntil(this._conversationLoad$),
         finalize(() => {
           this.inited = true;
         }),
@@ -412,14 +444,22 @@ export class ConversationPaneComponent implements OnDestroy, OnChanges, OnInit {
 
     if (this.typing.accounts.length === 0) {
       this.typing.state = 'none';
-      this.typing.name = '';
     } else if (this.typing.accounts.length === 1) {
       this.typing.state = 'single';
-      this.typing.name = this.typing.accounts[0].name;
     } else {
       this.typing.state = 'multiple';
-      this.typing.name = '';
     }
+
+    // Everybody typing is named in full, however many there are. The row is a
+    // single line that ellipsises, so a long list is cut off at the edge rather
+    // than growing over the thread.
+    const names = this.typing.accounts
+      .map((account) => account.name)
+      .filter((name) => !!name);
+
+    this.typing.name = names.length > 1
+      ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
+      : (names[0] || '');
 
     this._cdRef.markForCheck();
   }

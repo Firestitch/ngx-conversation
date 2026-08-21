@@ -135,9 +135,17 @@ export class ConversationItemsComponent implements OnInit, OnChanges, OnDestroy 
     }
   }
 
+  /**
+   * Throw the thread away and read it from the top. Costs the whole
+   * conversation, so it is for when what is already held may be wrong — the
+   * conversation changed, or an item was edited or removed. New messages
+   * arriving want load(), which asks only for what it does not have.
+   *
+   * The read cursor deliberately survives. It records what this account has
+   * been told it read, which refetching the same messages does not change.
+   */
   public reload(): void {
     this.conversationItems = [];
-    this.lastConversationItem = null;
     this.load();
   }
 
@@ -215,7 +223,13 @@ export class ConversationItemsComponent implements OnInit, OnChanges, OnDestroy 
           ];
   
           const lastConversationItem = this.conversationItems[0];
-          if (lastConversationItem && lastConversationItem !== this.lastConversationItem) {
+
+          // Compared by id, not by identity. Every load maps its rows into new
+          // objects, so an identity check is never equal and marks the thread
+          // read after every single load — including the loads that a read
+          // itself caused, because marking read announces the conversation
+          // changed. That is a write loop the server keeps feeding.
+          if (lastConversationItem && lastConversationItem.id !== this.lastConversationItem?.id) {
             this.conversationService.conversationConfig
               .conversationRead(this.conversation, lastConversationItem)
               .subscribe();
