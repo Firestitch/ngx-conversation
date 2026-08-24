@@ -42,6 +42,15 @@
             border: none !important;
             padding: 0px !important;
           }
+
+          // `.converstaion-row` owns the row's own padding and margin, which is why
+          // every cell above is stripped of fs-list's 8px. The actions cell is the
+          // exception: the 44px icon-button sits in the 35px box fs-list gives it and
+          // relies on that padding for the room it overflows into. Without it the
+          // trigger is clipped flat against the pane edge with no gutter.
+          td.actions-col {
+            padding: 0 8px !important;
+          }
         }
       }
     }
